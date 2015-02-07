@@ -27,7 +27,7 @@ class SequenceAligner():
 				if dominant[i] == subdominant[i]:
 					numAligned += 1
 		return numAligned
-		
+	
 	def alignSequences(self, dominantSequenceIn, sequenceMatrixIn):
 		"""
 			takes a dominant sequence as a string and sequences to be aligned with it
@@ -71,13 +71,20 @@ class SequenceAligner():
 		for seq in subdominantSequences:
 			allSequences.append(''.join(seq))
 		return allSequences
-		
+	
+	def _getNumberOfDashes(self, str):
+		num = 0
+		for char in str:
+			if char is "-":
+				num += 1
+		return num
+	
 	def getDistanceMatrix(self, alignedSequences):
 		dominantAlignedSequence = alignedSequences[0]
 		subdominantAlignedSequences = alignedSequences[1:]
 		distanceMatrix = []
 		for seq in subdominantAlignedSequences:
-			distanceMatrix.append(self._getNumberOfAlignedNucleotides(dominantAlignedSequence, seq))
+			distanceMatrix.append(len(seq) - self._getNumberOfDashes(seq) - self._getNumberOfAlignedNucleotides(dominantAlignedSequence, seq))
 		return distanceMatrix
 		
 	def generateDotMatrix(self, alignedSequences):
