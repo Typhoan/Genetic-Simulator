@@ -20,7 +20,7 @@ class SequenceAligner():
 		return newList
 		
 	def _getNumberOfAlignedNucleotides(self, dominant, subdominant):
-		""" gets the number of aligned nucleotides geven to already-aligned sequences """
+		""" gets the number of aligned nucleotides in two already-aligned sequences """
 		numAligned = 0
 		for i in range(len(dominant)):
 			if dominant[i] is not "-" and subdominant[i] is not "-":
@@ -31,8 +31,8 @@ class SequenceAligner():
 	def alignSequences(self, dominantSequenceIn, sequenceMatrixIn):
 		"""
 			takes a dominant sequence as a string and sequences to be aligned with it
-			as a list of strings and returns a list of of strings with the dominant 
-			sequence (with gaps) in position 0 and the aligned other sequences (with gaps)
+			as a list of strings and returns a list of strings, having the dominant 
+			sequence (with dashes) in position 0 and the aligned other sequences (with dashes)
 			in the other positions
 		"""
 		# get lists from sequence strings
