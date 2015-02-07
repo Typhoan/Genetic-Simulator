@@ -1,0 +1,40 @@
+{% extends 'bioedit/base.html' %}
+
+{% block pagetitle %}Starting Page{% endblock %}
+
+{% block content %}
+
+<h3>RNA Sequences</h3>
+{% if rnas %}
+{% for strand in rnas %}
+<p>{{ strand }}</p>
+{% endfor %}
+{% endif %}
+
+<h3>Protien Sequences</h3>
+{% if protiens %}
+{% for strand in protiens %}
+<p>{{ strand }}</p>
+{% endfor %}
+{% endif %}
+
+<h3>Dot Matix</h3>
+{% if dot_matrix %}
+{% for strand in dot_matrix %}
+<p>{{ strand }}</p>
+{% endfor %}
+{% endif %}
+
+<h3>Aligned Sequences</h3>
+{% if aligned %}
+{% for strand in aligned %}
+<p>{{ strand }}</p>
+{% endfor %}
+{% endif %}
+
+<h3>Topological Tree</h3>
+{% if tree %}
+<p>{{ tree }}</p>
+{% endif %}
+
+{% endblock %}

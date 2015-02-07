@@ -1,0 +1,28 @@
+{% extends 'bioedit/base.html' %}
+
+{% block pagetitle %}Starting Page{% endblock %}
+
+{% block content %}
+
+<p>The species from the file.</p>
+
+{% if dna_sequences %}
+<form method='post' action='{% url 'bioedit:aligned' %}'> {% csrf_token %} 
+
+	{% for strand in dna_sequences %}
+		Species {{ forloop.counter }} <input type='text' size='200'  name='species{{ forloop.counter }}' value='{{ strand }}'/><br />
+		
+		{% if forloop.last %}
+			<input type="hidden" name="count" value="{{ forloop.counter }}" />
+		{% endif %}
+	
+	{% endfor %}
+	
+	<button type="submit">Submit</button>
+</form>
+
+{% else %}
+not working
+{% endif %}
+
+{% endblock %}
