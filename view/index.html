@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+ <head>
+ <link rel="stylesheet" type="text/css" href="../stylesheet/style.css">
+	<title>
+		BioEdit 2.0
+	</title>
+	
+ </head>
+ <body>
+	
+	<div class = "box">
+		BioEdit
+	</div>
+	<div style = "float: left;">		
+		<div>
+			<button class = "button" onclick= "showSelect()">
+				File Select
+			</button>
+		</div>
+		<div>
+			<button class = "button"  onClick= "showSpeciesDiv()">
+				Select Species
+			</button>
+		</div>		
+		<div>
+			<button class = "button" onClick= "showTopology()">
+				Topology
+			</button>
+		</div>		
+		<div>
+			<button class = "button" >
+				Waveform
+			</button>
+		</div>		
+		<div>		
+			<button class = "button" onClick= "showDotMatrix()">
+				Dot Matrix
+			</button>
+		</div>
+	</div>	
+	
+	<div style = "float right; padding-left:400px; padding-top:50px;">
+		<div id = "selectDiv" class = "selectDiv" style = "position: absolute; padding-left: 100px;">
+			<button> Browse </button>
+			<input type="text" readonly>
+			<button> Upload </button>
+		</div>		
+		<div id = "speciesDiv" style = "position: absolute;" hidden = "true">			
+			<div style = "padding-bottom: 20px; padding-left: 10px;">Select the dominate species and align.</div>
+			<div class = "speciesDiv" onClick="style.backgroundColor='#84DFC1';">
+			Species 1
+				<input class="textbox"type="text"value = "AAAAAAAAAAAAAAAAA"> 
+			</div>
+			<div class = "speciesDiv" onClick="style.backgroundColor='#84DFC1';">
+			Species 1
+				<input class="textbox"type="text"value = "BBBBBBBBBBBBBBBBBB"> 
+			</div>
+			<div class = "speciesDiv" onClick="style.backgroundColor='#84DFC1';">
+			Species 1
+				<input class="textbox"type="text"value = "CCCCCCCCCCCCCCCC"> 
+			</div>
+			<div style = "padding-left: 200px; padding-top:50px;">
+				<input type= "button" value = "Align" class = "round-button" onClick= "showTopology();"/>
+			</div>
+		</div>	
+		<div id = "TopologyDiv" style = "position: absolute;" hidden = "true">
+			<img src="../images/placeholderTopologyTree.jpg" height="90%" width="300%">
+		</div>		
+		<div id = "WaveformDiv" style = "position: absolute;" hidden = "true">
+		
+		</div>
+		<div id = "DotMatrixDiv" style = "position: absolute;" hidden = "true">
+			<img src="../images/placeholder_dot_plot_scatter.png" height="100%" width="130%">
+		</div>
+	</div>	
+	
+	<script>
+	
+		function showSelect()
+		{
+			var topology=document.getElementById("TopologyDiv");
+			topology.hidden = true;
+			var dotMatrix=document.getElementById("DotMatrixDiv");
+			dotMatrix.hidden = true;
+			var species =document.getElementById("speciesDiv");
+			species.hidden = true;
+			var select=document.getElementById("selectDiv");
+			select.hidden = false;
+		}
+		function showTopology()
+		{
+			 var topology=document.getElementById("TopologyDiv");
+			 topology.hidden = false;
+			 var dotMatrix=document.getElementById("DotMatrixDiv");
+			 dotMatrix.hidden = true;
+		}
+		
+		function showDotMatrix()
+		{
+			var topology=document.getElementById("TopologyDiv");
+			topology.hidden = true;
+			var dotMatrix=document.getElementById("DotMatrixDiv");
+			dotMatrix.hidden = false;
+		}
+		
+		function showSpeciesDiv()
+		{
+			var topology=document.getElementById("TopologyDiv");
+			topology.hidden = true;
+			var dotMatrix=document.getElementById("DotMatrixDiv");
+			dotMatrix.hidden = true;
+			var select=document.getElementById("selectDiv");
+			select.hidden = true;
+			var species =document.getElementById("speciesDiv");
+			species.hidden = false;
+			
+		}
+	</script> 
+	
+ </body>
+ 
+</html>
