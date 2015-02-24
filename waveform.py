@@ -1,7 +1,16 @@
+# Initial commit				Alexander Calvert, 2/19/2015
+# documentation added				Alesander Calvert, 2/24/2015
+# 
+# 
+
 import random
 import matplotlib.pyplot as plt
 
 def generateWaveform(sequence):
+	""" 
+	returns four lists of values representing the y-values of LCMM waveforms, 
+	each corresponding to a different nucleotide
+	"""
 	random.seed()
 	waveA = []
 	waveT = []
@@ -30,6 +39,8 @@ def generateWaveform(sequence):
 			waveC.extend([0.2, 0.45, 0.7, 1 + ((random.random() - 0.5)/4), 0.7, 0.45, 0.2])
 	return [waveA, waveT, waveG, waveC]
 	
+	
+#testing stuff
 seq = "ATCAGGCGAGAGAGTGCTGATTAGGCGTCTCTCTAGATCGGGGGGCTTATATGCTTTTATGAGATCATATAGCTA"
 wave = generateWaveform(seq)
 import sys
