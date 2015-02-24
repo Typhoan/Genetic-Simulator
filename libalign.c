@@ -19,12 +19,12 @@ int alignSequencePair(char* dominant, char* subdominant) {
 		for(j = 0; j < subdomLen; j++) {
 			if(dominant[i] == subdominant[j]) {
 				numAlignedNucs[(i - j + subdomLen - 1)]++; //this calculation maps the table indices to a particular alignment
-				printf("(%d, %d): algn %d\n", i, j, i-j+subdomLen-1);
-				for(k = 0; k < numAlignments; k++) {
-					printf("%d ", numAlignedNucs[k]);
-				}
-				printf("\n");
-				getchar();
+				//printf("(%d, %d): algn %d\n", i, j, i-j+subdomLen-1);
+				//for(k = 0; k < numAlignments; k++) {
+				//	printf("%d ", numAlignedNucs[k]);
+				//}
+				//printf("\n");
+				//getchar();
 			}
 		}
 		//printf("\n");
