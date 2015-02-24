@@ -1,9 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+/*
+Initial commit				Alexander Calvert, 2/24/2015
 
-//returns an integer representing the zero-indexed number of the alignment, starting at 
-//dom[0]->subdom[subDomlen-1] and ending at dom[domLen-1]->subdom[0]
+returns an integer representing the zero-indexed number of the alignment, starting at 
+dom[0]->subdom[subDomlen-1] and ending at dom[domLen-1]->subdom[0]
+probably should not be used by any class other than SequenceAligner
+*/
 int alignSequencePair(char* dominant, char* subdominant) {
 	int domLen = strlen(dominant);
 	int subdomLen = strlen(subdominant);
