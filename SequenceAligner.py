@@ -1,11 +1,26 @@
+# Initial commit				Alexander Calvert, 2/2/2015
+# added documentation				Alexander Calvert, 2/24/2015
+# 
+# 
+# 
+# 
+# 
+
 import random
 import time
 import os
 from ctypes import *
 
 class SequenceAligner():
-
+"""
+class to provide methods for aligning sequences, getting distance matrices, and getting dot matrices
+"""
 	def __init__(self, libAbsPath=None):
+		"""
+		constructor
+		note: either libalign.so must be in the same directory as this file, or libalign.so's path must
+		be passed as an argument to __init__
+		"""
 		self._lib = None
 		if libAbsPath == None:
 			self._lib = CDLL(os.path.join(os.path.abspath(os.path.dirname(__file__)), "libalign.so"))
@@ -82,6 +97,7 @@ class SequenceAligner():
 		return allSequences
 	
 	def _getNumberOfSpaces(self, str):
+		""" gets the number of space characters in a string """
 		num = 0
 		for char in str:
 			if char is " ":
@@ -89,6 +105,7 @@ class SequenceAligner():
 		return num
 	
 	def getDistanceMatrix(self, alignedSequences):
+		""" get list of distances between dominant and subdominant sequences"""
 		dominantAlignedSequence = alignedSequences[0]
 		subdominantAlignedSequences = alignedSequences[1:]
 		distanceMatrix = []
@@ -97,6 +114,7 @@ class SequenceAligner():
 		return distanceMatrix
 		
 	def generateDotMatrix(self, alignedSequences):
+		""" generate dot matrix based on already-aligned sequences """
 		dominantAlignedSequence = alignedSequences[0]
 		subdominantAlignedSequences = alignedSequences[1:]
 		dotMatrix = []
@@ -111,6 +129,7 @@ class SequenceAligner():
 		return dotMatrix
 
 	def _getAlignmentsFromAlignmentNumbers(self, domSeq, subdomSeqs, numbers):
+		""" convert returned number from libalign.so function to a list of aligned sequences """
 		longestSubLen = self._getLongestLength(subdomSeqs)
 		seqs = 	[]
 		dom = [" "] * (2*longestSubLen + len(domSeq) - 2)
@@ -129,13 +148,14 @@ class SequenceAligner():
 		return [s[numStartDashes:len(s)-numEndDashes] for s in seqs]
 		
 	def alignSequences(self, dominantSeq, seqMatrix):
+		""" use libalign.so to align sequences to a dominant sequence """
 		nums = []
 		for seq in seqMatrix:
 			nums.append(self._lib.alignSequencePair(dominantSeq, seq))
 		alignment = self._getAlignmentsFromAlignmentNumbers(dominantSeq, seqMatrix, nums)
 		return alignment
 
-		
+#testing stuff
 def createSequence(len):
 	random.seed()
 	list = []
