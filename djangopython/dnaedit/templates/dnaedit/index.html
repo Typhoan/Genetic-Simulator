@@ -1,0 +1,19 @@
+{% extends 'dnaedit/base.html' %}
+
+{% block pagetitle %}Starting Page{% endblock %}
+
+{% block content %}
+
+{% if labs %}
+	<ul>
+	{% for lab in labs %}
+	<li><a href="{% url 'dnaedit:labSelect' lab.id %}">{{ lab.lab_name }}</a></li>
+	{% endfor %}
+	
+	</ul>
+	
+{% else %}
+	<p>No labs are available.</p>
+{% endif %}
+
+{% endblock %}

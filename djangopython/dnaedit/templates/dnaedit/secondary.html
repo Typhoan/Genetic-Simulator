@@ -1,0 +1,17 @@
+{% extends 'dnaedit/base.html' %}
+
+{% block pagetitle %}Starting Page{% endblock %}
+
+{% block content %}
+
+<p>Input the DNA sequences for four species.</p>
+
+<form method='POST' action='{% url 'dnaedit:aligned' %}'> {% csrf_token %} 
+	Species 1<input type='text' size='200' name='species'></input><br />
+	Species 2<input type='text' size='200' name='species'></input><br />
+	Species 3<input type='text' size='200' name='species'></input><br />
+	Species 4<input type='text' size='200' name='species'></input><br />
+	<button type="submit">Submit</button>
+</form>
+
+{% endblock %}
