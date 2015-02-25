@@ -5,7 +5,7 @@
 {% block content %}
 
 <form method='post' action='{% url 'dnaedit:dna' %}' enctype='multipart/form-data'> {% csrf_token %}
-	<input type='file' name='group_file'/>
+	<input type='text' name='labname' value='Input Lab Name Here'/> <input type='file' name='group_file'/>
 	<button type='submit'>Upload</button>
 </form>
 

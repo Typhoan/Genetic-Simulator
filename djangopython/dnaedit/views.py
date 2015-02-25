@@ -1,10 +1,11 @@
 from django.http import HttpResponse
 from django.template import RequestContext, loader
-from dnaedit.models import Lab
+from dnaedit.models import Lab, Species, LabFile
 import python.SequenceAligner as Aligner
 import python.TreeBuilder as TB
 import python.SequenceTranscription as ST
 import python.DNAFileDict as DNAFile
+import python.QueryChecks as Checks
 # Create your views here.
 
 def index(request):
@@ -86,6 +87,47 @@ def fileHandler(request):
         dna=[1,2,3,4]
     
     template = loader.get_template('dnaedit/species.html')
+    context = RequestContext(request, {'dna_sequences':dna})
+    
+    return HttpResponse(template.render(context))
+
+def fileSparse(request):
+    if request.method == 'POST':
+        strands = request.FILES['group_file']
+        labName = request.POST.get('labname', False)
+        
+    if strands:
+        strandsName = strands.name
+        name = DNAFile.handleUploadedFile(strands, strandsName, '')
+        DNAdict = DNAFile.DNAFileDict(fileName=name)
+        DNAdict.setLists()
+        
+        if labName:
+            if not Checks.checkLabNameExists(labName):
+                lab = Lab.create(labName=labName, dirName=labName)
+                lab.save()
+            else:
+                lab = Lab.objects.filter(lab_name = labName)[0]   
+        
+        if lab and strandsName:
+            if not Checks.checkFileNameExists(strandsName):
+                labFile = LabFile.create(file_name=strandsName, lab=lab)
+                labFile.save()
+            else:
+                labFile = LabFile.objects.filter(file_name = strandsName)[0]
+        dna = []
+        
+        dnaKeys = DNAdict.getDNADict()
+        for key in dnaKeys.keys():
+            species = Species.create(name=key, dna_string=dnaKeys[key], fileName=labFile)
+            species.save()
+        
+        dna = Species.objects.filter(fileName=labFile)
+        
+    else:
+        dna=[]
+    
+    template = loader.get_template('dnaedit/speciesFromDB.html')
     context = RequestContext(request, {'dna_sequences':dna})
     
     return HttpResponse(template.render(context))
