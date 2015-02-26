@@ -20,13 +20,22 @@ def labSelection(request, lab_id):
     labName = Lab.objects.filter(id=lab_id)[0].lab_name
     return HttpResponse("The lab you selected is: %s" % labName)
 
+def fileSelection(request, file_id):
+    labFile = LabFile.objects.filter(id=file_id)[0]
+    dna = Species.objects.filter(fileName=labFile)
+    
+    template = loader.get_template("dnaedit/speciesFromDB.html")
+    context = RequestContext(request, {'dna_sequences':dna})
+    
+    return HttpResponse(template.render(context))
+
 def species(request):
     template = loader.get_template('dnaedit/secondary.html')
     
     context = RequestContext(request)
     return HttpResponse(template.render(context))
 
-def alignOutput(request):
+def generateOutput(request):
     spes = []
     if request.method == 'POST':
         postCount = request.POST.get('count')
@@ -36,12 +45,12 @@ def alignOutput(request):
         
     if spes:
         align = Aligner.SequenceAligner()
-        aligningSpes = spes
-        alignedList = align.alignSequences(aligningSpes.pop(), aligningSpes)
+        #aligningSpes = spes
+        #alignedList = align.alignSequences(aligningSpes.pop(), aligningSpes)
         
-        tree = TB.createTree(alignedList)
+        tree = TB.createTree(spes)
         
-        dotMatrix = align.generateDotMatrix(alignedList)
+        dotMatrix = align.generateDotMatrix(spes)
         rna = []
         for strand in spes:
             rna.append(ST.DNAToRNA(strand))
@@ -53,10 +62,9 @@ def alignOutput(request):
         #align_output = createTree(spes)
             
     template = loader.get_template('dnaedit/demoPage.html')
-    context = RequestContext(request, {'rnas': rna, 'protiens':protien, 'aligned': alignedList, 'tree': tree, 'dot_matrix':dotMatrix})
+    context = RequestContext(request, {'rnas': rna, 'protiens':protien, 'tree': tree, 'dot_matrix':dotMatrix})
     
     return HttpResponse(template.render(context))
-
 
 def uploadFile(request):
     template = loader.get_template('dnaedit/file.html')
@@ -119,8 +127,9 @@ def fileSparse(request):
         
         dnaKeys = DNAdict.getDNADict()
         for key in dnaKeys.keys():
-            species = Species.create(name=key, dna_string=dnaKeys[key], fileName=labFile)
-            species.save()
+            if not Checks.checkSpeciesExists(dnaString=dnaKeys[key], name=key, labFile=labFile):
+                species = Species.create(name=key, dna_string=dnaKeys[key], fileName=labFile)
+                species.save()
         
         dna = Species.objects.filter(fileName=labFile)
         

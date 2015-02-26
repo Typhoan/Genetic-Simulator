@@ -1,4 +1,4 @@
-from dnaedit.models import Lab, LabFile
+from dnaedit.models import Lab, LabFile, Species
 
 '''
 Created on Feb 25, 2015
@@ -21,3 +21,12 @@ def checkFileNameExists(name):
         return True
     
     return False
+
+def checkSpeciesExists(dnaString, name, labFile):
+    species = Species.objects.filter(name=name, dna_string=dnaString, fileName=labFile)
+    
+    if species.count() > 0:
+        return True
+    
+    return False
+    
