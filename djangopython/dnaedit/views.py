@@ -20,7 +20,20 @@ def labSelection(request, lab_id):
     labName = Lab.objects.filter(id=lab_id)[0].lab_name
     return HttpResponse("The lab you selected is: %s" % labName)
 
-def fileSelection(request, file_id):
+def showFiles(request):
+    template = loader.get_template('dnaedit/showFiles.html')
+    
+    files = LabFile.objects.all()
+    
+    context = RequestContext(request, {'files': files})
+    return HttpResponse(template.render(context))
+
+
+def fileSelection(request):
+    if request.method == 'POST':
+        file_id = request.POST.get('file_id')
+    else:
+        file_id = -1
     labFile = LabFile.objects.filter(id=file_id)[0]
     dna = Species.objects.filter(fileName=labFile)
     

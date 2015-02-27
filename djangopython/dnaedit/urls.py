@@ -10,6 +10,8 @@ urlpatterns = patterns('',
 
     url(r'^$', views.index, name='index'),
     url(r'^lab/(?P<lab_id>\d+)/$', views.labSelection, name='labSelect'),
+    url(r'^display/$', views.showFiles, name='display'),
+    url(r'^fileSelect/$', views.fileSelection, name='fileSelect'),
     url(r'^species/$', views.species, name='species'),
     url(r'^aligned/$', views.generateOutput, name='aligned'),
     url(r'^upload/$', views.uploadFile, name='upload'),
