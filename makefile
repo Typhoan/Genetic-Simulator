@@ -1,2 +1,2 @@
 all:
-	gcc -shared -o libalign.so -fPIC alignment.c
+	gcc -shared -o libalign.so -fPIC libalign.c
