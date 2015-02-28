@@ -42,7 +42,7 @@ int alignSequencePair(char* dominant, char* subdominant) {
 		}
 	}
 
-	printf("\n%d\n", bestAlignment);
+	//printf("\n%d\n", bestAlignment);
 	return bestAlignment;
 	
 }
