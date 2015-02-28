@@ -9,7 +9,7 @@ import random
 import math
 import matplotlib.pylab as pylab
 import matplotlib.pyplot as pyplot
-from scipy import interpolate
+#from scipy import interpolate
 import numpy as np
 
 def generateWaveform(sequence):
