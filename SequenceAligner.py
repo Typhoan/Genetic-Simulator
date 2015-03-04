@@ -1,6 +1,6 @@
 # Initial commit				Alexander Calvert, 2/2/2015
 # added documentation				Alexander Calvert, 2/24/2015
-# 
+# added exception handling/border case handling	Alexander Calvert, 3/4/2015
 # 
 # 
 # 
@@ -12,9 +12,9 @@ import os
 from ctypes import *
 
 class SequenceAligner():
-"""
-class to provide methods for aligning sequences, getting distance matrices, and getting dot matrices
-"""
+	"""
+	class to provide methods for aligning sequences, getting distance matrices, and getting dot matrices
+	"""
 	def __init__(self, libAbsPath=None):
 		"""
 		constructor
@@ -23,9 +23,15 @@ class to provide methods for aligning sequences, getting distance matrices, and 
 		"""
 		self._lib = None
 		if libAbsPath == None:
-			self._lib = CDLL(os.path.join(os.path.abspath(os.path.dirname(__file__)), "libalign.so"))
+			try:
+				self._lib = CDLL(os.path.join(os.path.abspath(os.path.dirname(__file__)), "libalign.so"))
+			except:
+				raise ValueError("could not find libalign.so in current directory " + os.path.join(os.path.abspath(os.path.dirname(__file__))))
 		else:
-			self._lib = CDLL(libAbsPath)
+			try:
+				self._lib = CDLL(libAbsPath)
+			except:
+				raise ValueError("could not find libalign.so in " + libAbsPath)
 
 	def _getLongestLength(self, listOfLists):
 		""" gets length of longest list from a list of lists """
@@ -106,6 +112,8 @@ class to provide methods for aligning sequences, getting distance matrices, and 
 	
 	def getDistanceMatrix(self, alignedSequences):
 		""" get list of distances between dominant and subdominant sequences"""
+		if not alignedSequences:
+			raise ValueError("alignedSequences must not be empty")
 		dominantAlignedSequence = alignedSequences[0]
 		subdominantAlignedSequences = alignedSequences[1:]
 		distanceMatrix = []
@@ -115,6 +123,8 @@ class to provide methods for aligning sequences, getting distance matrices, and 
 		
 	def generateDotMatrix(self, alignedSequences):
 		""" generate dot matrix based on already-aligned sequences """
+		if not alignedSequences:
+			raise ValueError("alignedSequences must not be empty")
 		dominantAlignedSequence = alignedSequences[0]
 		subdominantAlignedSequences = alignedSequences[1:]
 		dotMatrix = []
@@ -127,7 +137,7 @@ class to provide methods for aligning sequences, getting distance matrices, and 
 			dotMatrix.append(''.join(listCopy))
 		dotMatrix.insert(0, dominantAlignedSequence)
 		return dotMatrix
-
+	# atgca
 	def _getAlignmentsFromAlignmentNumbers(self, domSeq, subdomSeqs, numbers):
 		""" convert returned number from libalign.so function to a list of aligned sequences """
 		longestSubLen = self._getLongestLength(subdomSeqs)
@@ -149,11 +159,16 @@ class to provide methods for aligning sequences, getting distance matrices, and 
 		
 	def alignSequences(self, dominantSeq, seqMatrix):
 		""" use libalign.so to align sequences to a dominant sequence """
-		nums = []
-		for seq in seqMatrix:
-			nums.append(self._lib.alignSequencePair(dominantSeq, seq))
-		alignment = self._getAlignmentsFromAlignmentNumbers(dominantSeq, seqMatrix, nums)
-		return alignment
+		if not dominantSeq:
+			raise ValueError("dominantSeq must not be empty")		
+		elif not seqMatrix:
+			return [dominantSeq]
+		else:
+			nums = []
+			for seq in seqMatrix:
+				nums.append(self._lib.alignSequencePair(dominantSeq, seq))
+			alignment = self._getAlignmentsFromAlignmentNumbers(dominantSeq, seqMatrix, nums)
+			return alignment
 
 #testing stuff
 def createSequence(len):
@@ -170,30 +185,40 @@ def createSequence(len):
 		else:
 			list.append("C")
 	return ''.join(list)
-	
+
+'''
 aligner = SequenceAligner()
 	
 sample = []
-#sample.append("GATCGTAGCTGATGCTGTAGTATGCTATCTCGCTTATATAGCTAGCTAGTTAGGC")
-#sample.append("AGTCGATTATATTAGCTTAGTCGGCTA")
-#sample.append("AGAGCTTTTCTATATTATATAGCTAGCTTATATAGATATATCGGCGCGATGTGTGG")
-#sample.append("CGCTCTCGCTCTCGCTCGAGATATACGCGAAATAGCTGATAATCGTCGCC")
 
-for i in range(10):
-	sample.append(createSequence(5000))	
+sample.append("AAACACAATAGCTAAGACCCAAACTGGGATTAGATACCCCACTATGCTTAGCCCTAAACCTCAACAGTTAAATCACAAAACTGCTCGCCAGAACACTACGAGCCACAGCTTAAAACTCAAAGGACCTGGCGGTGCTTCATATCCCTCTAGAGGAGCCTGTTCTGTAATCGATAAACCCCGATCAACCTCACCACCTCTTGCTCAGCCTATATACCGCCATCTTCAGCAAACCCTGATGAAGGC")
+sample.append("AAACACAATAGCTAAGACCCAAACTGGGATTAGATACCCCACTATGCTTAGCCCTAAACTTCAACAGTTAAATTACAAAACTGCTCGCCAGAACACTACGAGCCACAGCTTAAAACTCAAAGGACCTGGCGGTGCTTCATATCCCTCTAGAGGAGCCTGTTCTGTAATCGATAAACCCCGATCAACCTCACCGCCTCTTGCTCAGCCTATATACCGCCATCTTCAGCAAACCCTGATGAAGGT")
+sample.append("AAACACAATAGCTAAGGCCCAAACTGGGATTAGATACCCCACTATGCTTAGCCCTAAACTTTAACAGTTAAATCACAAAACTGCTCGCCAGAACACTACGAGCCACAGCTTAAAACTCAAAGGACCTGGCGGTGCTTCATATCCCTCTAGAGGAGCCTGTTCTGTAATCGATAAACCCCGATCAACCTCACCACCCCTTGCTCAGCCTATATACCGCCATCTTCAGCAAACCCTGATGAAGGC")
+sample.append("ACACACGATAGCTAGGACCCAAACTGGGATTAGATACCCCACTATGCCTAGCCCTAAACCCAAATAGTTACATAACAAAACTATTCGCCAGAGTACTACTCGCAACTGCCTAAAACTCAAAGGACTTGGCGGTGCTTCACATCCACCTAGAGGAGCCTGTTCTATAATCGATAAACCCCGATAGACCTTACCAACCCTTGCCCAGCCTATATACCGCCATCTTCAGCAAACCCTAAAAAGGAA")
+sample.append("ACACACGATAGCTAAGACCCAAACTGGGATTAGATACCCCACTATGCTTAGCCCTAAACACAGATAATTCCAAAACAAAACTATTCGCCAGAGTACTACTAGCAACAGCTTAAAACTCAAAGGACTTGGCGGTGCTTCATACCCCTCTAGAGGAGCCTGTTCTATAATCGATAAACCCCGATAAACCTCACCAACCCTTGCTCAGTCTATATACCGCCATCTCCAGCAAACCCTAAAAAGGAC")
+sample.append("AAGCACGATAGCTAAGACCCAAACTGGGATTAGATACCCCACTATGCTTAGCCCTAAACCTTAATAATTAAACCTCAAAATTATTTGCCAGAGAACTACTAGCTACAGCTTAAAACTCAAAGGACTTGGCGGTACTTTATATCCATCTAGAGGAGCCTGTTCTATAATCGATAAACCCCGTTCTACCTTACCCCTTCTCGCTCAGCCTATATACCGCCATCTTCAGCAAACCCTAAAAAGGCA")
+
+#for i in range(10):
+#	sample.append(createSequence(5000))	
 
 #a = aligner.alignSequences_deprecated(sample[0], sample[1:])
 #for s in a:
 #	print s
 #print ""
 
-a = aligner.alignSequences(sample[0], sample[1:])
+a = aligner.alignSequences("ATGCA", [])
 #print aligner.getDistanceMatrix(a)
+
 for s in a:
-	print s
+	print s, "\n"
+
+for s in aligner.generateDotMatrix(a):
+	print s, "\n"
 
 
 # print aligner.getDistanceMatrix(seqs)
 # seqs = aligner.generateDotMatrix(seqs)
 # for seq in seqs:
 	# print seq
+
+'''
