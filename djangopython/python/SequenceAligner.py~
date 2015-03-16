@@ -150,7 +150,6 @@ class to provide methods for aligning sequences, getting distance matrices, and 
 	def alignSequences(self, dominantSeq, seqMatrix):
 		""" use libalign.so to align sequences to a dominant sequence """
 		nums = []
-                #solved the problem by casting the type to char*. Donovan Jordan change 03/16/15
 		for seq in seqMatrix:
 			nums.append(self._lib.alignSequencePair(c_char_p(dominantSeq), c_char_p(seq)))
 		alignment = self._getAlignmentsFromAlignmentNumbers(dominantSeq, seqMatrix, nums)
