@@ -54,20 +54,31 @@
                 }
             }
             return list;
-            }
-        var seq = "AGCTAGATTATAATATGC"
-        new Dygraph(
-            document.getElementById('graphdiv'),
-            generateWaveform(seq),
-            {
-              labels: ['x', 'A', 'T', 'G', 'C'],
-              connectSeparatedPoints: true,
-              drawPoints: false,
-              drawGrid: false,
-              width: seq.length > 1000 ? 30000 : 30 * seq.length,
-              height: 150
-            }
-        ); 
+        }
+        function drawGraph(seq, containingDiv) {
+            return new Dygraph(
+                containingDiv,
+                generateWaveform(seq),
+                {
+                  labels: ['x', 'A', 'T', 'G', 'C'],
+                  connectSeparatedPoints: true,
+                  drawPoints: false,
+                  drawGrid: false,
+                  width: seq.length > 1000 ? 30000 : 30*seq.length + 20,
+                  height: 150
+                }
+            ); 
+        }
+        function drawGraphInPopup(seq) {
+            var graphWindow = window.open("file:///C:/Users/Alexander/Desktop/code/web/graph_page.html", "_blank", "centerscreen, resizable, dialog, scrollbars, top=0, left=0, width=100, height=100");
+            graphWindow.resizeTo(seq.length*30 + 120 > 2*screen.availWidth/3 ? 2*screen.availWidth/3 : seq.length*30 + 120, 275);
+            graphWindow.onload = function() { drawGraph(dnaseq, graphWindow.document.getElementById('graph')); };
+        }
+        
+        var dnaseq = "AGCTCAGCTCAGCTCAGCTCAGCTCAGCTCAGCTCAGCTCAGCTCAGCTCAGCTCAGCTC";
+        drawGraphInPopup(dnaseq);
+        
+        
 </script>
 </body>
 </html>
