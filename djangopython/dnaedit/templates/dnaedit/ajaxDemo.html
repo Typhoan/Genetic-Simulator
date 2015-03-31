@@ -1,0 +1,70 @@
+{% extends 'dnaedit/base.html' %}
+
+{% block pagetitle %}Starting Page{% endblock %}
+
+{% block content %}
+
+<p>The species from the file.</p>
+
+{% if dna_sequences %}
+<form id="sequencesForm"> {% csrf_token %} 
+
+	{% for strand in dna_sequences %}
+		<input type='text' size='15' name='speciesName{{ forloop.counter }}' id='speciesName{{ forloop.counter }}' value='Species {{ forloop.counter }}'/> <input type='text' size='200'  name='species{{ forloop.counter }}' value='{{ strand.dna_string }}'/><br />
+		
+		{% if forloop.last %}
+			<input type="hidden" name="count" id="count" value="{{ forloop.counter }}" />
+		{% endif %}
+	
+	{% endfor %}
+	
+	<button type="button" id="sequenceSubmit">Submit</button>
+</form>
+
+{% else %}
+not working
+{% endif %}
+
+<div id="responsePost"> </div>
+
+{% endblock %}
+
+{% block js %}
+
+<script>
+$("#sequenceSubmit").click(function(){
+		$("#responsePost").html("<p>PrePostInfo. "+$("#sequencesForm").serializeArray()+"</p>");
+		//$.post(
+			//"{% url 'dnaedit:dnaInfo' %}", $("#sequencesForm").serialize(),
+			//function(data){
+				//$("#responsePost").html("<p>It Worked Finally!!!!</p>");
+				
+			//}, json);
+			var dataInfo = [];
+			var count = $("#count").val();
+			for(i=1; i<=count; i++){
+				dataInfo.push({name:"", value:""});
+			}
+			$.ajax({
+			
+				url:"{% url 'dnaedit:dnaInfo' %}",
+				type: "POST",
+				data: $("#sequencesForm").serializeArray(),
+				success: function(data){
+				
+						//var jsonParse = JSON.parse(data);
+						console.log(data);
+						var keys = data.keys;
+						$("#responsePost").html("<p>"+data.dotMatrix[keys[0]]+"</p>");
+					
+					},
+				error: function(jqXHR, textStatus, errorThrown){
+                                 alert('Error: '+ errorThrown);
+                     }
+			});
+
+	});
+</script>
+
+{% endblock %}
+

@@ -16,5 +16,8 @@ urlpatterns = patterns('',
     url(r'^aligned/$', views.generateOutput, name='aligned'),
     url(r'^upload/$', views.uploadFile, name='upload'),
     url(r'^dna/$', views.fileSparse, name='dna'),
+    url(r'^ajaxTest/$', views.getDNAInformation, name='dnaInfo'),
+    url(r'^ajaxDemo/$', views.fileSelectionAjax, name='ajaxFiles'),
+    url(r'^ajaxDisplay/$', views.ajaxShowFiles, name='ajaxDisplay'),
     
 )

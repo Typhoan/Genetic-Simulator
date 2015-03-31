@@ -6,6 +6,8 @@ import python.TreeBuilder as TB
 import python.SequenceTranscription as ST
 import python.DNAFileDict as DNAFile
 import python.QueryChecks as Checks
+from django.http.response import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 
 def index(request):
@@ -58,12 +60,12 @@ def generateOutput(request):
         
     if spes:
         align = Aligner.SequenceAligner()
-        #aligningSpes = spes
-        #alignedList = align.alignSequences(aligningSpes.pop(), aligningSpes)
+        aligningSpes = spes
+        alignedList = align.alignSequences(aligningSpes.pop(), aligningSpes)
         
-        tree = TB.createTree(spes)
+        tree = TB.createTree(alignedList)
         
-        dotMatrix = align.generateDotMatrix(spes)
+        dotMatrix = align.generateDotMatrix(alignedList)
         rna = []
         for strand in spes:
             rna.append(ST.DNAToRNA(strand))
@@ -154,4 +156,70 @@ def fileSparse(request):
     
     return HttpResponse(template.render(context))
 
+
+#AJAX TEST FUNCTIONS
+@csrf_exempt
+def getDNAInformation(request):
+    spes = []
+    regSpes = []
+    key = []
+    if request.method == 'POST':
+        postCount = request.POST.get('count')
+        
+        for value in range(int(postCount)):
+            spes.append(request.POST.get('species'+str(value+1)))
+            regSpes.append(request.POST.get('species'+str(value+1)))
+            key.append('species'+str(value+1))
     
+    if spes:
+        align = Aligner.SequenceAligner()
+        aligningSpes = spes
+        alignedList = align.alignSequences(aligningSpes.pop(), aligningSpes)
+        
+        tree = TB.createTree(alignedList)
+        
+        dotMatrix = align.generateDotMatrix(alignedList)
+        
+        dotMatrixSend = {}
+        for i in range(int(postCount)):
+            dotMatrixSend[key[i]] = dotMatrix[i]
+            
+        rna = {}
+        keyIterator = 0
+        for strand in regSpes:
+            rna[key[keyIterator]]=ST.DNAToRNA(strand)
+            keyIterator += 1
+            
+        protien = {}
+
+        for k in range(int(postCount)):
+            protien[key[k]] = ST.RNAToProtien(rna[key[k]])
+        #x,y = alignSequences(dna[0], dna)
+        #align_output = createTree(spes)
+        
+    responseDict = {'keys':key ,'rnaSequences': rna, 'protienSequences':protien, 'tree': tree, 'dotMatrix':dotMatrixSend}
+    response = JsonResponse(responseDict)
+    
+    return response
+
+
+def fileSelectionAjax(request):
+    if request.method == 'POST':
+        file_id = request.POST.get('file_id')
+    else:
+        file_id = -1
+    labFile = LabFile.objects.filter(id=file_id)[0]
+    dna = Species.objects.filter(fileName=labFile)
+    
+    template = loader.get_template("dnaedit/ajaxDemo.html")
+    context = RequestContext(request, {'dna_sequences':dna})
+    
+    return HttpResponse(template.render(context))
+
+def ajaxShowFiles(request):
+    template = loader.get_template('dnaedit/ajaxShowFiles.html')
+    
+    files = LabFile.objects.all()
+    
+    context = RequestContext(request, {'files': files})
+    return HttpResponse(template.render(context))
