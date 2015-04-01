@@ -115,6 +115,7 @@ def fileHandler(request):
     return HttpResponse(template.render(context))
 
 def fileSparse(request):
+    message=""
     if request.method == 'POST':
         strands = request.FILES['group_file']
         labName = request.POST.get('labname', False)
@@ -123,36 +124,44 @@ def fileSparse(request):
         strandsName = strands.name
         name = DNAFile.handleUploadedFile(strands, strandsName, '')
         DNAdict = DNAFile.DNAFileDict(fileName=name)
-        DNAdict.setLists()
         
-        if labName:
-            if not Checks.checkLabNameExists(labName):
-                lab = Lab.create(labName=labName, dirName=labName)
-                lab.save()
-            else:
-                lab = Lab.objects.filter(lab_name = labName)[0]   
+        isGoodFile = DNAdict.checkCorrectFileFormat()
         
-        if lab and strandsName:
-            if not Checks.checkFileNameExists(strandsName):
-                labFile = LabFile.create(file_name=strandsName, lab=lab)
-                labFile.save()
-            else:
-                labFile = LabFile.objects.filter(file_name = strandsName)[0]
-        dna = []
+        if isGoodFile:
+            DNAdict.setLists()
         
-        dnaKeys = DNAdict.getDNADict()
-        for key in dnaKeys.keys():
-            if not Checks.checkSpeciesExists(dnaString=dnaKeys[key], name=key, labFile=labFile):
-                species = Species.create(name=key, dna_string=dnaKeys[key], fileName=labFile)
-                species.save()
+            if labName:
+                if not Checks.checkLabNameExists(labName):
+                    lab = Lab.create(labName=labName, dirName=labName)
+                    lab.save()
+                else:
+                    lab = Lab.objects.filter(lab_name = labName)[0]   
         
-        dna = Species.objects.filter(fileName=labFile)
+            if lab and strandsName:
+                if not Checks.checkFileNameExists(strandsName):
+                    labFile = LabFile.create(file_name=strandsName, lab=lab)
+                    labFile.save()
+                else:
+                    labFile = LabFile.objects.filter(file_name = strandsName)[0]
+                    message="Lab currently exists. Please try again."
+        
+            dnaKeys = DNAdict.getDNADict()
+            for key in dnaKeys.keys():
+                if not Checks.checkSpeciesExists(dnaString=dnaKeys[key], name=key, labFile=labFile):
+                    species = Species.create(name=key, dna_string=dnaKeys[key], fileName=labFile)
+                    species.save()
+                
+            if message == "":
+                message="Lab has been successfully added."
+        
+        else:
+            message = "File contained the wrong format. Please try again."
         
     else:
-        dna=[]
+        message = "No file was uploaded. Please try again."
     
-    template = loader.get_template('dnaedit/speciesFromDB.html')
-    context = RequestContext(request, {'dna_sequences':dna})
+    template = loader.get_template('dnaedit/file.html')
+    context = RequestContext(request, {'message':message})
     
     return HttpResponse(template.render(context))
 
@@ -174,7 +183,7 @@ def getDNAInformation(request):
     if spes:
         align = Aligner.SequenceAligner()
         aligningSpes = spes
-        alignedList = align.alignSequences(aligningSpes.pop(), aligningSpes)
+        alignedList = align.alignSequences(aligningSpes[0], aligningSpes[1:])
         
         tree = TB.createTree(alignedList)
         
@@ -197,7 +206,7 @@ def getDNAInformation(request):
         #x,y = alignSequences(dna[0], dna)
         #align_output = createTree(spes)
         
-    responseDict = {'keys':key ,'rnaSequences': rna, 'protienSequences':protien, 'tree': tree, 'dotMatrix':dotMatrixSend}
+    responseDict = {'keys':key ,'rnaSequences': rna, 'proteinSequences':protien, 'tree': tree, 'dotMatrix':dotMatrixSend}
     response = JsonResponse(responseDict)
     
     return response

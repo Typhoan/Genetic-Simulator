@@ -1,177 +1,16 @@
-{% extends 'dnaedit/base.html' %}
-
-{% block pagetitle %}Starting Page{% endblock %}
-
-{% block content %}
-
-<p>The species from the file.</p>
-
-{% if dna_sequences %}
-<form id="sequencesForm"> {% csrf_token %} 
-
-	{% for strand in dna_sequences %}
-		<input type='text' size='15' name='speciesName{{ forloop.counter }}' id='speciesName{{ forloop.counter }}' value='Species {{ forloop.counter }}'/> <input type='text' size='200'  name='species{{ forloop.counter }}' id="speciesValue{{ forloop.counter }}" value='{{ strand.dna_string }}'/><br />
-		
-		{% if forloop.last %}
-			<input type="hidden" name="count" id="count" value="{{ forloop.counter }}" />
-		{% endif %}
-	
-	{% endfor %}
-	
-	<button type="button" id="sequenceSubmit">Submit</button>
-</form>
-
-<button id="waveformDisplay">Show Waveform</button><br/><br/>
-
-<button id="displayRNA">RNA Sequences</button>
-<button id="displayProtein">Protein Sequences</button>
-<button id="displayDotMatrix">Dot Matrix</button>
-<button id="displayTree">Topological Tree</button>
-
-{% else %}
-not working
-{% endif %}
-
-<div id="responsePost"></div>
-
-<div id="rnaSequences" hidden="hidden">
-<h3>RNA Sequences</h3>
-<p>Result Not Found</p>
-</div>
-
-
-<div id="proteinSequences" hidden="hidden">
-<h3>Protein Sequences</h3>
-<p>Result Not Found</p>
-</div>
-
-<div id="dotMatrix" hidden="hidden">
-<h3>Dot Matrix</h3>
-<p>Result Not Found</p>
-</div>
-
-<div id="topTree" hidden="hidden">
-<h3>Topological Tree</h3>
-<p>Result Not Found</p>
-</div>
-
-{% endblock %}
-
-{% block js %}
-
-<script>
-function setRNA(rnaStuff, keys){
-	console.log(rnaStuff);
-	var key;
-	var replacement="";
-	var i;
-	for(i=0; i<keys.length; i++){
-	console.log(keys[i]);
-		replacement += "<p>"+rnaStuff[keys[i]]+"</p>";
-	}
-	
-	$("#rnaSequences").html(replacement);
-	
-}
-function setProtein(proteinStuff, keys){
-	var key;
-	var replacement="";
-	var i;
-	for(i=0; i<keys.length; i++){
-		replacement += "<p>"+proteinStuff[keys[i]]+"</p>";
-	}
-	$("#proteinSequences").html(replacement);
-}
-function setDotMatrix(dotStuff, keys){
-	var key;
-	var replacement="";
-	var i;
-	for(i=0; i<keys.length; i++){
-		replacement += "<p><pre style='font-size:16px'>"+dotStuff[keys[i]]+"</pre></p>";
-	}
-	$("#dotMatrix").html(replacement);
-}
-function setTopTree(treeStuff){
-	var replacement="";
-	replacement += "<p>"+treeStuff+"</p>";
-	$("#topTree").html(replacement);
-}
-
-
-
-
-$("#sequenceSubmit").click(function(){
-		//$.post(
-			//"{% url 'dnaedit:dnaInfo' %}", $("#sequencesForm").serialize(),
-			//function(data){
-				//$("#responsePost").html("<p>It Worked Finally!!!!</p>");
-				
-			//}, json);
-			var dataInfo = [];
-			var count = $("#count").val();
-			for(i=1; i<=count; i++){
-				dataInfo.push({name:"", value:""});
-			}
-			$.ajax({
-			
-				url:"{% url 'dnaedit:dnaInfo' %}",
-				type: "POST",
-				data: $("#sequencesForm").serializeArray(),
-				success: function(data){
-				
-						//var jsonParse = JSON.parse(data);
-						console.log(data);
-						var keys = data.keys;
-						setRNA(data.rnaSequences, keys);
-						setProtein(data.proteinSequences, keys);
-						setDotMatrix(data.dotMatrix, keys);
-						setTopTree(data.tree);
-						$("#dotMatrix").show();
-						
-					},
-				error: function(jqXHR, textStatus, errorThrown){
-                                 alert('Error: '+ errorThrown);
-                     }
-			});
-
-	});
-	
-	$(document).ready(function(){
-		$("#displayRNA").click(function(){
-			$("#rnaSequences").show();
-			$("#proteinSequences").hide();
-			$("#dotMatrix").hide();
-			$("#topTree").hide();
-		});
-		$("#displayProtein").click(function(){
-			$("#proteinSequences").show();
-			$("#rnaSequences").hide();
-			$("#dotMatrix").hide();
-			$("#topTree").hide();
-		});
-		$("#displayDotMatrix").click(function(){
-			$("#dotMatrix").show();
-			$("#rnaSequences").hide();
-			$("#proteinSequences").hide();
-			$("#topTree").hide();
-		});
-		$("#displayTree").click(function(){
-			$("#topTree").show();
-			$("#rnaSequences").hide();
-			$("#proteinSequences").hide();
-			$("#dotMatrix").hide();
-		});
-	
-	});
-	
-</script>
-
+<html>
+<head>
+<script type="text/javascript"
+  src="dygraph-combined-dev.js"></script>
+</head>
+<body>
+<div id="graphdiv"></div>
 <script type="text/javascript">
         function generateWaveform(sequence) {
             "use strict";
             var list = [],
             i;
-            console.log("Working");
+            window.log("Working");
             for (i = 0; i < sequence.length; i += 1) {
                 if (sequence.charAt(i) === "A") {
                     list[list.length] = [(7 * i), 0.2, Math.random() / 10, Math.random() / 10, Math.random() / 10];
@@ -234,24 +73,16 @@ $("#sequenceSubmit").click(function(){
         //when actually put on server, change the hard-coded url in window.open and 
         //the element name in argument to drawGraph
         function drawGraphInPopup(seq) {
-            var graphWindow = window.open("{{ STATIC_URL }}popUp/GraphPopUp.html", "_blank", "centerscreen, resizable, dialog, scrollbars, top=0, left=0, width=100, height=100");
+            var graphWindow = window.open("GraphPopUp.html", "_blank", "centerscreen, resizable, dialog, scrollbars, top=0, left=0, width=100, height=100");
             graphWindow.resizeTo(seq.length*30 + 120 > 2*screen.availWidth/3 ? 2*screen.availWidth/3 : seq.length*30 + 120, 275);
             // 'graph' is the name of the div in GraphPopUp.html that should contain the graph
-            graphWindow.onload = function() { drawGraph(seq, graphWindow.document.getElementById('graph')); };
+            graphWindow.onload = function() { drawGraph(dnaseq, graphWindow.document.getElementById('graph')); };
         }
         
-       
-        //drawGraphInPopup(dnaseq);
-        $("#waveformDisplay").click(function(){
-       	 	console.log("WaveformClick");
-       	 	var dnaSeq = String($("#speciesValue1").val()); 
-       	 	console.log(dnaSeq);
-       	 	//var dnaSeq = "AAACACAATAGCTAAGGCCCAAACTGGGATTAGATACCCCACTATGCTTAGCCCTAAACTTTAACAGTTAAATCACAAAACTGCTCGCCAGAACACTACGAGCCACAGCTTAAAACTCAAAGGACCTGGCGGTGCTTCATATCCCTCTAGAGGAGCCTGTTCTGTAATCGATAAACCCCGATCAACCTCACCACCCCTTGCTCAGCCTATATACCGCCATCTTCAGCAAACCCTGATGAAGGC";
-			drawGraphInPopup(dnaSeq);
-			console.log("WaveformEnd");	
-		});
+        var dnaseq = "AGCTCAGCTCAGCTCAGCTCAGCTCAGCTCAGCTCAGCTCAGCTCAGCTCAGCTCAGCTC";
+        drawGraphInPopup(dnaseq);
+        
+        
 </script>
-
-
-{% endblock %}
-
+</body>
+</html>
