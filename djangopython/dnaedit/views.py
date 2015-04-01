@@ -143,7 +143,6 @@ def fileSparse(request):
                     labFile.save()
                 else:
                     labFile = LabFile.objects.filter(file_name = strandsName)[0]
-                    message="Lab currently exists. Please try again."
         
             dnaKeys = DNAdict.getDNADict()
             for key in dnaKeys.keys():
