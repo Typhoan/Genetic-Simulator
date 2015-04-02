@@ -1,3 +1,4 @@
+
 body {
     min-height:100%;
 	background-color: #E4DBBF;
@@ -32,7 +33,13 @@ body {
     padding-right:10px; 
 	background-color: white;
 	float:right;
-  } 
+	padding-bottom: 20px;
+	position: relative;
+	overflow: auto;
+	overflow-y: hidden;
+	white-space: nowrap;
+	font-size: 25px;
+  }
  
 .selectDiv{
 	background-color: #E4DBBF;
@@ -43,7 +50,11 @@ body {
 
 .speciesDiv{
 	font-size: 25px;
-	padding-bottom:20px;
+/* 	padding-bottom:25px;*/	
+	float: left;
+	display: block;
+	position: relative;
+	margin-left: 100px;
 }
 .round-button {
     display:block;

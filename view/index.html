@@ -49,19 +49,21 @@
 		
 		<div id = "speciesDiv" style = "position: absolute;" hidden = "true">			
 			<div style = "padding-bottom: 40px; padding-left: 10px;">Select the dominate species and align.</div>
+			
 			<label id="positionLabel" style="position:relative; padding-left:1110px; color:red;">0/250</label>
-			<div class = "speciesDiv" contenteditable="true" onClick="style.backgroundColor='#84DFC1';">
-			Species 1
-				<div id = "test" contenteditable="true" class="textbox"type="text" value = "AAAAAAAAAAAAAAAAA" > </div>
-			</div>
-			<div class = "speciesDiv" contenteditable="true" onClick="style.backgroundColor='#84DFC1';">
-			Species 1
-				<div id = "test" contenteditable="true" class="textbox"type="text" value = "AAAAAAAAAAAAAAAAA" > </div>
-			</div>
-			<div class = "speciesDiv" contenteditable="true" onClick="style.backgroundColor='#84DFC1';">
-			Species 1
-				<div id = "test" contenteditable="true" class="textbox"type="text" value = "AAAAAAAAAAAAAAAAA" > </div>
-			</div>
+			
+			<div class = "speciesDiv" contenteditable="true" onClick="style.backgroundColor='#84DFC1';"> Species 1 </div>
+			
+			<div id = "test" contenteditable="true" class="textbox" type="text" value = "AAAAAAAAAAAAAAAAA" > </div>
+			
+			<div class = "speciesDiv" contenteditable="true" onClick="style.backgroundColor='#84DFC1';"> Species 1 </div>
+			
+			<div id = "test" contenteditable="true" class="textbox"type="text" value = "AAAAAAAAAAAAAAAAA" > </div>
+			
+			<div class = "speciesDiv" contenteditable="true" onClick="style.backgroundColor='#84DFC1';"> Species 1 </div>
+			
+			<div id = "test" contenteditable="true" class="textbox"type="text" value = "AAAAAAAAAAAAAAAAA" > </div>
+			
 			<div style = "padding-left: 200px; padding-top:50px;">
 				<input type= "button" value = "Align" class = "round-button" onClick= "showTopology();"/>
 			</div>
@@ -72,8 +74,8 @@
 		<div id = "WaveformDiv" style = "position: absolute;" hidden = "true">
 	</div>	
 	
+	<script language="JavaScript" type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 	<script>
-	
 		function getCharacterOffsetWithin(range, node) {
 			var treeWalker = document.createTreeWalker(
 				node,
@@ -104,6 +106,12 @@
 			var label = document.getElementById("positionLabel");
 			label.innerHTML = getCharacterOffsetWithin(range, el) + '/250';
 		}, false);
+		
+		$('#test').keypress(function(event) {
+			if (event.keyCode == 13) {
+				event.preventDefault();
+			}
+		});
 	
 		function showSelect()
 		{
