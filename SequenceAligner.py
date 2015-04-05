@@ -11,6 +11,7 @@ import DNAFileDict
 
 '''
 class to perform sequence alignment and related operations
+uses Clustal Omega to perform alignment operations
 '''
 class SequenceAligner:
 
