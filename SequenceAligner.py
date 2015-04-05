@@ -6,30 +6,17 @@ Created on Apr 4, 2015
 
 '''
 
-from subprocess import call
+from subprocess import check_output
 import DNAFileDict
+import tempfile
 
 '''
 class to perform sequence alignment and related operations
-uses Clustal Omega to perform alignment operations
 '''
 class SequenceAligner:
 
     def __init(self):
         pass
-
-
-    '''
-    writes a fasta file from a dictionary mapping labels to sequences
-
-    @param fileDict - the label/seq mapping
-    @param filename - the path to the fasta file to be written
-    '''
-    def writeFasta(self, fileDict, filename):
-        with open(filename, "w") as f:
-            for label, sequence in fileDict.iteritems():
-                f.write("> " + label + "\n")
-                f.write(sequence + "\n")
 
     '''
     get a list of distances from sequences to a dominant sequence
@@ -81,22 +68,30 @@ class SequenceAligner:
     '''
     performs a multiple alignment on a list of sequences using Clustal Omega
 
-    @param fastaPathIn - the fasta-formatted file containing sequences to be aligned
-    @param fastaPathOut - the fasta file the resulting alignment is outputted to
+    @param seqMatrix - the sequence matrix containing all of the sequences to be aligned
     @return returns the aligned sequences as a 2d list with gaps
     '''
-    def alignSequences(self, fastaPathIn, fastaPathOut="out.fasta"):
-        din = DNAFileDict.DNAFileDict(fastaPathIn)
-        ret = call(["clustalo", "-i", fastaPathIn, "-o", fastaPathOut, "--outfmt=fasta", "--force"])
-        if ret == 0:
-            dout = DNAFileDict.DNAFileDict(fastaPathOut)
+    def alignSequences(self, seqMatrix):
+        fastaIn = tempfile.NamedTemporaryFile()
+        fastaOut = tempfile.NamedTemporaryFile()
+        with tempfile.NamedTemporaryFile() as fastaIn, tempfile.NamedTemporaryFile() as fastaOut:
+            for i in range(len(seqMatrix)):
+                fastaIn.write(">" + str(i) + "\n")
+                fastaIn.write(seqMatrix[i] + "\n")
+            fastaIn.seek(0)
+            output = check_output(["clustalo", "-i", fastaIn.name, "--outfmt=fasta"])
+            fastaOut.write(output)
+            fastaOut.seek(0)
+            dout = DNAFileDict.DNAFileDict(fastaOut.name)
             dout.setLists()
             return dout.getDNADict().values()
-        else:
-            raise ValueError
-
+           
 '''
+sample = []
+sample.append("AGCTA")
+sample.append("GCTAG")
+sample.append("AGGTA")
 a = SequenceAligner()
-seqs = a.alignSequences("in.fa")
-for i in a.generateDotMatrix(seqs): print i
+seqs = a.alignSequences(sample)
+for i in seqs: print i
 '''
