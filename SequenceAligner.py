@@ -15,7 +15,7 @@ class to perform sequence alignment and related operations
 '''
 class SequenceAligner:
 
-    def __init(self):
+    def __init__(self):
         pass
 
     '''
@@ -48,12 +48,29 @@ class SequenceAligner:
     @param alignedSequences - list of sequence for distance calculation, assumed to be already aligned
     @return dotMatrix - the dot matrix
     '''
-    def generateDotMatrix(self, alignedSequences):
-        """ generate dot matrix based on already-aligned sequences """
+    def generateDotMatrix_old(self, alignedSequences):
         if not alignedSequences:
             raise ValueError("alignedSequences must not be empty")
         dominantAlignedSequence = alignedSequences[0]
         subdominantAlignedSequences = alignedSequences[1:]
+        dotMatrix = []
+        for sequence in subdominantAlignedSequences:
+            listCopy = list(sequence)
+            for i in range(len(sequence)):
+                if sequence[i] is not "-" and dominantAlignedSequence[i] is not "-":
+                    if sequence[i] == dominantAlignedSequence[i]:
+                        listCopy[i] = "."
+            dotMatrix.append(''.join(listCopy))
+        dotMatrix.insert(0, dominantAlignedSequence)
+        return dotMatrix
+
+    '''
+    gives a dot matrix (alignment with similar nucleotides replaced with dots)
+    
+    @param alignedSequences - list of sequence for distance calculation, assumed to be already aligned
+    @return dotMatrix - the dot matrix
+    '''
+    def generateDotMatrix(self, dominantAlignedSequence, subdominantAlignedSequences):
         dotMatrix = []
         for sequence in subdominantAlignedSequences:
             listCopy = list(sequence)
@@ -88,10 +105,12 @@ class SequenceAligner:
            
 '''
 sample = []
-sample.append("AGCTA")
-sample.append("GCTAG")
-sample.append("AGGTA")
+sample.append("AGCTAGATTATAATTTCGGGCGATAGCTAGATCGATAGC")
+sample.append("GCTAGCCCCCTTTATAGGCTATATATAGATATCGCTGCT")
+sample.append("AGGGCTATCATCGACGTATCATATATACGCGATCGGTTA")
 a = SequenceAligner()
 seqs = a.alignSequences(sample)
-for i in seqs: print i
+for s in seqs: print s
+print ""
+for s in a.generateDotMatrix(seqs.pop(), seqs): print s
 '''
