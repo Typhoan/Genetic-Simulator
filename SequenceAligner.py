@@ -67,7 +67,8 @@ class SequenceAligner:
     '''
     gives a dot matrix (alignment with similar nucleotides replaced with dots)
     
-    @param alignedSequences - list of sequence for distance calculation, assumed to be already aligned
+    @param dominantAlignedSequence - the dominant sequence from the aligned sequence list
+    @param subdominantAlignedSequences - the subdominant aligned sequences
     @return dotMatrix - the dot matrix
     '''
     def generateDotMatrix(self, dominantAlignedSequence, subdominantAlignedSequences):
