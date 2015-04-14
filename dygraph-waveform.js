@@ -101,9 +101,6 @@ function generateWaveform(sequence) {
                       axisLineWidth: 1
                     },
                     x: {
-                      valueFormatter: function(ms) {
-                        return 'xvf(' + formatDate(new Date(ms)) + ')';
-                      },
                       drawAxis: true,
                       drawGrid: false,
                       axisLabelFontSize: 14,
