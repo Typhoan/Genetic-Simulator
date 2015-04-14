@@ -19,50 +19,40 @@ function generateWaveform(sequence) {
             i;
             for (i = 0; i < sequence.length; i += 1) {
                 if (sequence.charAt(i) === "A") {
-                    list[list.length] = [(7 * i), 0.2, Math.random() / 10, Math.random() / 10, Math.random() / 10];
-                    //list[list.length] = [(7 * i) + 1, 0.45, Math.random() / 10, Math.random() / 10, Math.random() / 10];
-                    list[list.length] = [(7 * i) + 2, 0.7, Math.random() / 10, Math.random() / 10, Math.random() / 10];
-                    list[list.length] = [(7 * i) + 3, 1 + ((Math.random() - 0.5) / 4), Math.random() / 10, Math.random() / 10, Math.random() / 10];
-                    list[list.length] = [(7 * i) + 4, 0.7, Math.random() / 10, Math.random() / 10, Math.random() / 10];
-                    //list[list.length] = [(7 * i) + 5, 0.45, Math.random() / 10, Math.random() / 10, Math.random() / 10];
-                    list[list.length] = [(7 * i) + 6, 0.2, Math.random() / 10, Math.random() / 10, Math.random() / 10];
+                    list[list.length] = [i - 0.4, 0.2, Math.random() / 10, Math.random() / 10, Math.random() / 10];
+                    list[list.length] = [i - 0.2, 0.7, Math.random() / 10, Math.random() / 10, Math.random() / 10];
+                    list[list.length] = [i + 0.0, 1 + ((Math.random() - 0.375) / 4), Math.random() / 10, Math.random() / 10, Math.random() / 10];
+                    list[list.length] = [i + 0.2, 0.7, Math.random() / 10, Math.random() / 10, Math.random() / 10];
+                    list[list.length] = [i + 0.4, 0.2, Math.random() / 10, Math.random() / 10, Math.random() / 10];
                 } else if (sequence.charAt(i) === "T") {
-                    list[list.length] = [(7 * i), Math.random() / 10, 0.2, Math.random() / 10, Math.random() / 10];
-                    //list[list.length] = [(7 * i) + 1, Math.random() / 10, 0.45, Math.random() / 10, Math.random() / 10];
-                    list[list.length] = [(7 * i) + 2, Math.random() / 10, 0.7, Math.random() / 10, Math.random() / 10];
-                    list[list.length] = [(7 * i) + 3, Math.random() / 10, 1 + ((Math.random() - 0.5) / 4), Math.random() / 10, Math.random() / 10];
-                    list[list.length] = [(7 * i) + 4, Math.random() / 10, 0.7, Math.random() / 10, Math.random() / 10];
-                    //list[list.length] = [(7 * i) + 5, Math.random() / 10, 0.45, Math.random() / 10, Math.random() / 10];
-                    list[list.length] = [(7 * i) + 6, Math.random() / 10, 0.2, Math.random() / 10, Math.random() / 10];
+                    list[list.length] = [i - 0.4, Math.random() / 10, 0.2, Math.random() / 10, Math.random() / 10];
+                    list[list.length] = [i - 0.2, Math.random() / 10, 0.7, Math.random() / 10, Math.random() / 10];
+                    list[list.length] = [i + 0.0, Math.random() / 10, 1 + ((Math.random() - 0.375) / 4), Math.random() / 10, Math.random() / 10];
+                    list[list.length] = [i + 0.2, Math.random() / 10, 0.7, Math.random() / 10, Math.random() / 10];
+                    list[list.length] = [i + 0.4, Math.random() / 10, 0.2, Math.random() / 10, Math.random() / 10];
                 } else if (sequence.charAt(i) === "G") {
-                    list[list.length] = [(7 * i), Math.random() / 10, Math.random() / 10, 0.2, Math.random() / 10];
-                    //list[list.length] = [(7 * i) + 1, Math.random() / 10, Math.random() / 10, 0.45, Math.random() / 10];
-                    list[list.length] = [(7 * i) + 2, Math.random() / 10, Math.random() / 10, 0.7, Math.random() / 10];
-                    list[list.length] = [(7 * i) + 3, Math.random() / 10, Math.random() / 10, 1 + ((Math.random() - 0.5) / 4), Math.random() / 10];
-                    list[list.length] = [(7 * i) + 4, Math.random() / 10, Math.random() / 10, 0.7, Math.random() / 10];
-                    //list[list.length] = [(7 * i) + 5, Math.random() / 10, Math.random() / 10, 0.45, Math.random() / 10];
-                    list[list.length] = [(7 * i) + 6, Math.random() / 10, Math.random() / 10, 0.2, Math.random() / 10];
+                    list[list.length] = [i - 0.4, Math.random() / 10, Math.random() / 10, 0.2, Math.random() / 10];
+                    list[list.length] = [i - 0.2, Math.random() / 10, Math.random() / 10, 0.7, Math.random() / 10];
+                    list[list.length] = [i + 0.0, Math.random() / 10, Math.random() / 10, 1 + ((Math.random() - 0.375) / 4), Math.random() / 10];
+                    list[list.length] = [i + 0.2, Math.random() / 10, Math.random() / 10, 0.7, Math.random() / 10];
+                    list[list.length] = [i + 0.4, Math.random() / 10, Math.random() / 10, 0.2, Math.random() / 10];
                 } else if (sequence.charAt(i) === "C") {
-                    list[list.length] = [(7 * i), Math.random() / 10, Math.random() / 10, Math.random() / 10, 0.2];
-                    //list[list.length] = [(7 * i) + 1, Math.random() / 10, Math.random() / 10, Math.random() / 10, 0.45];
-                    list[list.length] = [(7 * i) + 2, Math.random() / 10, Math.random() / 10, Math.random() / 10, 0.7];
-                    list[list.length] = [(7 * i) + 3, Math.random() / 10, Math.random() / 10, Math.random() / 10, 1 + ((Math.random() - 0.5) / 4)];
-                    list[list.length] = [(7 * i) + 4, Math.random() / 10, Math.random() / 10, Math.random() / 10, 0.7];
-                    //list[list.length] = [(7 * i) + 5, Math.random() / 10, Math.random() / 10, Math.random() / 10, 0.45];
-                    list[list.length] = [(7 * i) + 6, Math.random() / 10, Math.random() / 10, Math.random() / 10, 0.2];
+                    list[list.length] = [i - 0.4, Math.random() / 10, Math.random() / 10, Math.random() / 10, 0.2];
+                    list[list.length] = [i - 0.2, Math.random() / 10, Math.random() / 10, Math.random() / 10, 0.7];
+                    list[list.length] = [i + 0.0, Math.random() / 10, Math.random() / 10, Math.random() / 10, 1 + ((Math.random() - 0.375) / 4)];
+                    list[list.length] = [i + 0.2, Math.random() / 10, Math.random() / 10, Math.random() / 10, 0.7];
+                    list[list.length] = [i + 0.4, Math.random() / 10, Math.random() / 10, Math.random() / 10, 0.2];
                 } else {
-                    //list[list.length] = [i, Math.random() / 10, Math.random() / 10, Math.random() / 10, Math.random() / 10];
-                    //list[list.length] = [i, Math.random() / 10, Math.random() / 10, Math.random() / 10, Math.random() / 10];
-                    list[list.length] = [i, Math.random() / 10, Math.random() / 10, Math.random() / 10, Math.random() / 10];
-                    list[list.length] = [i, Math.random() / 10, Math.random() / 10, Math.random() / 10, Math.random() / 10];
-                    list[list.length] = [i, Math.random() / 10, Math.random() / 10, Math.random() / 10, Math.random() / 10];
-                    list[list.length] = [i, Math.random() / 10, Math.random() / 10, Math.random() / 10, Math.random() / 10];
-                    list[list.length] = [i, Math.random() / 10, Math.random() / 10, Math.random() / 10, Math.random() / 10];
+                    list[list.length] = [i - 0.4, Math.random() / 10, Math.random() / 10, Math.random() / 10, Math.random() / 10];
+                    list[list.length] = [i - 0.2, Math.random() / 10, Math.random() / 10, Math.random() / 10, Math.random() / 10];
+                    list[list.length] = [i + 0.0, Math.random() / 10, Math.random() / 10, Math.random() / 10, Math.random() / 10];
+                    list[list.length] = [i + 0.2, Math.random() / 10, Math.random() / 10, Math.random() / 10, Math.random() / 10];
+                    list[list.length] = [i + 0.4, Math.random() / 10, Math.random() / 10, Math.random() / 10, Math.random() / 10];
                 }
             }
-            for (i = 0; i < list.length; i += 1) {
-                console.log(list[i]);
-            }
+            //for (i = 0; i < list.length; i += 1) {
+            //    console.log(list[i]);
+            //}
             return list;
         }
         /*
@@ -105,15 +95,18 @@ function generateWaveform(sequence) {
                   labelsDiv: legendDiv, 
                   axes: {
                     y: {
-                      drawAxis: true,
+                      drawAxis: true,   
                       drawGrid: false,
                       axisLabelFontSize: 0,
                       axisLineWidth: 1
                     },
                     x: {
+                      valueFormatter: function(ms) {
+                        return 'xvf(' + formatDate(new Date(ms)) + ')';
+                      },
                       drawAxis: true,
                       drawGrid: false,
-                      axisLabelFontSize: 0,
+                      axisLabelFontSize: 14,
                       axisLineWidth: 1
                     }
                   }
