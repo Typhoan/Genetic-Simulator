@@ -910,13 +910,35 @@
 		background: #35b88f url('../images/pic01.jpg') bottom center no-repeat;
 		padding: 5em 0 5em 0;
 		margin: 0;
-		background-size: 125% auto;
+		background-size: 100% auto;
 	}
 
 		#sequences .button
 		{
 			color: #35b882;
 			text-shadow: 0 0 0.5px rgba(53,184,130,0.25);
+		}
+		
+		#sequences .textbox { 
+			border: 1px solid #848484; 
+			-webkit-border-radius: 30px; 
+			-moz-border-radius: 30px; 
+			border-radius: 30px; 
+			outline:0; 
+			height:45px; 
+			width: 1000px; 
+		   /*  padding-left:10px; 
+			padding-right:10px;  */
+			background-color: white;
+			color: black;
+			/* float:right; */
+			padding-bottom: 20px;
+			position: relative;
+			overflow: auto;
+			overflow-y: hidden;
+			white-space: nowrap;
+			font-size: 25px;
+			margin-left: 250px;
 		}
 
 		#sequences header
@@ -1228,25 +1250,7 @@
 			}
 			
 			
-.textbox { 
-    border: 1px solid #848484; 
-    -webkit-border-radius: 30px; 
-    -moz-border-radius: 30px; 
-    border-radius: 30px; 
-    outline:0; 
-    height:25px; 
-    width: 1000px; 
-    padding-left:10px; 
-    padding-right:10px; 
-	background-color: white;
-	float:right;
-	padding-bottom: 20px;
-	position: relative;
-	overflow: auto;
-	overflow-y: hidden;
-	white-space: nowrap;
-	font-size: 25px;
-  }
+
  
 .selectDiv{
 	background-color: #E4DBBF;
@@ -1258,8 +1262,13 @@
 .speciesDiv{
 	font-size: 25px;
 /* 	padding-bottom:25px;*/	
-	float: left;
+	padding-right: 20px;
+	float: left; 
 	display: block;
-	position: relative;
+	/*position: absolute;*/
 	margin-left: 100px;
+	overflow: auto;
+	overflow-y: hidden;
+	overflow-x: hidden;
+	white-space: nowrap;
 }

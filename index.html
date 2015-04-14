@@ -6,7 +6,7 @@
 -->
 <html>
 	<head>
-		<title>Overflow by HTML5 UP</title>
+		<title>DNA Studio</title>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="description" content="" />
 		<meta name="keywords" content="" />
@@ -54,23 +54,29 @@
 					<h2>Select Sequences and Align</h2>
 				</header>
 				
-				<!-- <div id = "speciesDiv" style = "position: absolute;">			
+				<div id = "speciesDiv">			
 					
 					<label id="positionLabel" style="position:relative; padding-left:1110px; color:red;">0/250</label>
 					
-					<div class = "speciesDiv" contenteditable="true" onClick="style.backgroundColor='#84DFC1';"> Species 1 </div>
+					<div id = "species1" class = "speciesDiv" contenteditable="true" onClick="style.backgroundColor='#84DFC1';"> Species 1 </div>
 					
-					<div id = "test" contenteditable="true" class="textbox" type="text" value = "AAAAAAAAAAAAAAAAA" > </div>
+					<div id = "textbox1" contenteditable="true" class="textbox" type="text" value = "AAAAAAAAAAAAAAAAA" > </div>
 					
-					<div class = "speciesDiv" contenteditable="true" onClick="style.backgroundColor='#84DFC1';"> Species 1 </div>
+					<div id = "species2" class = "speciesDiv" contenteditable="true" onClick="style.backgroundColor='#84DFC1';"> Species 2 </div>
 					
-					<div id = "test" contenteditable="true" class="textbox"type="text" value = "AAAAAAAAAAAAAAAAA" > </div>
+					<div id = "textbox2" contenteditable="true" class="textbox"type="text" value = "AAAAAAAAAAAAAAAAA" > </div>
 					
-					<div class = "speciesDiv" contenteditable="true" onClick="style.backgroundColor='#84DFC1';"> Species 1 </div>
+					<div id = "species3" class = "speciesDiv" contenteditable="true" onClick="style.backgroundColor='#84DFC1';"> Species 3 </div>
 					
-					<div id = "test" contenteditable="true" class="textbox"type="text" value = "AAAAAAAAAAAAAAAAA" > </div>					
+					<div id = "textbox3" contenteditable="true" class="textbox"type="text" value = "AAAAAAAAAAAAAAAAA" > </div>		
+
 				</div>	
-						 -->
+				
+				<div id = "addRemoveDiv">
+					<button id ="addSequence" style=" border: none; background: none; float:left; position:relative; margin-left:1070px; padding-top: 15px; display:block; color: white; font-size: 15px;" onClick = "addSequence()"> Add New |</button>	
+					<button id ="removeSequence" style=" border: none; background: none; position:relative; margin-left:1071px; display:block; padding-top: 15px; display:block; color: white; font-size: 15px;" onClick = "removeSequence(this)">Remove </button>
+				</div>
+				
 				<footer>
 					<a href="#topology" class="button style2 scrolly">Select Sequences</a>
 				</footer>
@@ -323,6 +329,38 @@
 	<script language="JavaScript" type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 	
 		<script>
+			var sequenceCount = 3;
+			
+			function addSequence(){
+				sequenceCount ++;
+				var newSequence = document.createElement('div');
+				newSequence.id = 'sequence'+sequenceCount;
+				newSequence.setAttribute("class", "speciesDiv");
+				newSequence.setAttribute("contenteditable", "true");
+				newSequence.innerHTML = 'Species'+ sequenceCount;
+				
+				var newSequenceTextbox = document.createElement('div');
+				newSequenceTextbox.id = 'textBox' + sequenceCount;
+				newSequenceTextbox.setAttribute("class", "textbox");
+				newSequenceTextbox.setAttribute("contenteditable", "true");
+				newSequenceTextbox.setAttribute("type", "text");
+				
+				var sequenceDiv = document.getElementById('speciesDiv');
+				sequenceDiv.appendChild(newSequence);
+				sequenceDiv.appendChild(newSequenceTextbox);
+			}
+			
+			function removeSequence(){
+				if(sequenceCount >= 1){
+					var div = document.getElementById('speciesDiv');
+					var childLength = document.getElementById('speciesDiv').children.length - 1;
+					div.removeChild(div.children[childLength]);
+					div.removeChild(div.children[childLength - 1]);
+					sequenceCount --;
+				}
+			}
+			
+			
 			function getCharacterOffsetWithin(range, node) {
 				var treeWalker = document.createTreeWalker(
 					node,
@@ -360,46 +398,6 @@
 				}
 			});
 		
-			function showSelect()
-			{
-				var topology=document.getElementById("TopologyDiv");
-				topology.hidden = true;
-				<!-- var dotMatrix=document.getElementById("DotMatrixDiv"); -->
-				<!-- dotMatrix.hidden = true; -->
-				var species =document.getElementById("speciesDiv");
-				species.hidden = true;
-				var select=document.getElementById("selectDiv");
-				select.hidden = false;
-			}
-			function showTopology()
-			{
-				 var topology=document.getElementById("TopologyDiv");
-				 topology.hidden = false;
-				 <!-- var dotMatrix=document.getElementById("DotMatrixDiv"); -->
-				<!--  dotMatrix.hidden = true; -->
-			}
-			
-			function showDotMatrix()
-			{
-				var topology=document.getElementById("TopologyDiv");
-				topology.hidden = true;
-				<!-- var dotMatrix=document.getElementById("DotMatrixDiv"); -->
-				<!-- dotMatrix.hidden = false; -->
-			}
-			
-			function showSpeciesDiv()
-			{
-				var topology=document.getElementById("TopologyDiv");
-				topology.hidden = true;
-				<!-- var dotMatrix=document.getElementById("DotMatrixDiv"); -->
-				<!-- dotMatrix.hidden = true; -->
-				var select=document.getElementById("selectDiv");
-				select.hidden = true;
-				var species =document.getElementById("speciesDiv");
-				species.hidden = false;
-				
-			}
-			
 			
 		</script> 
 
