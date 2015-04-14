@@ -51,24 +51,24 @@
 		<!-- Feature 1 -->
 			<section id="sequences" >
 				<header>
-					<h2>Select Sequences and Align</h2>
+					<h2>Select Sequence and Align</h2>
 				</header>
 				
 				<div id = "speciesDiv">			
 					
 					<label id="positionLabel" style="position:relative; padding-left:1110px; color:red;">0/250</label>
 					
-					<div id = "species1" class = "speciesDiv" contenteditable="true" onClick="style.backgroundColor='#84DFC1';"> Species 1 </div>
+					<div id = "species1" class = "speciesDiv" contenteditable="true" onClick="toggleSelect(this);"> Species 1 </div>
 					
-					<div id = "textbox1" contenteditable="true" class="textbox" type="text" value = "AAAAAAAAAAAAAAAAA" > </div>
+					<div id = "textbox1" contenteditable="true" class="textbox" type="text" > </div>
 					
-					<div id = "species2" class = "speciesDiv" contenteditable="true" onClick="style.backgroundColor='#84DFC1';"> Species 2 </div>
+					<div id = "species2" class = "speciesDiv" contenteditable="true" onClick="toggleSelect(this);"> Species 2 </div>
 					
-					<div id = "textbox2" contenteditable="true" class="textbox"type="text" value = "AAAAAAAAAAAAAAAAA" > </div>
+					<div id = "textbox2" contenteditable="true" class="textbox"type="text" > </div>
 					
-					<div id = "species3" class = "speciesDiv" contenteditable="true" onClick="style.backgroundColor='#84DFC1';"> Species 3 </div>
+					<div id = "species3" class = "speciesDiv" contenteditable="true" onClick="toggleSelect(this);"> Species 3 </div>
 					
-					<div id = "textbox3" contenteditable="true" class="textbox"type="text" value = "AAAAAAAAAAAAAAAAA" > </div>		
+					<div id = "textbox3" contenteditable="true" class="textbox"type="text" > </div>		
 
 				</div>	
 				
@@ -331,13 +331,24 @@
 		<script>
 			var sequenceCount = 3;
 			
+			function toggleSelect(currentSequence){
+				var selectedSequence = currentSequence;
+				if(selectedSequence.style.backgroundColor == ""){
+					selectedSequence.style.backgroundColor='#84DFC1';
+				}
+				else{
+					selectedSequence.style.backgroundColor = "";
+				}
+			}
+			
 			function addSequence(){
 				sequenceCount ++;
 				var newSequence = document.createElement('div');
 				newSequence.id = 'sequence'+sequenceCount;
 				newSequence.setAttribute("class", "speciesDiv");
 				newSequence.setAttribute("contenteditable", "true");
-				newSequence.innerHTML = 'Species'+ sequenceCount;
+				newSequence.setAttribute("onClick", "toggleSelect(this);")
+				newSequence.innerHTML = 'Species '+ sequenceCount;
 				
 				var newSequenceTextbox = document.createElement('div');
 				newSequenceTextbox.id = 'textBox' + sequenceCount;
