@@ -1,5 +1,6 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
+import dnaedit
 
 urlpatterns = patterns('',
     # Examples:
@@ -8,4 +9,5 @@ urlpatterns = patterns('',
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^dnaedit/',include('dnaedit.urls', namespace='dnaedit')),
+    url(r'^media/images/(?P<imageName>[^/]+)/$', dnaedit.views.imageShow, )
 )

@@ -5,14 +5,12 @@ Created on Feb 5, 2015
 '''
 
 
-import SequenceAligner as alignment
-import Topology as topo
+import Review.src.SequenceAligner as alignment
+import Review.src.Topology as topo
 import os
-#from ete2 import Tree
+from ete2 import Tree
 from ete2 import TreeStyle
 from datetime import datetime
-from django.core.files.storage import FileSystemStorage
-from djangopython.settings import MEDIA_ROOT
 
 '''
 Uses functions from SequenceAligner.py and Topology.py to build a topological tree
@@ -20,14 +18,14 @@ Uses functions from SequenceAligner.py and Topology.py to build a topological tr
 @return - a string to the directory where the picture is located.
 '''
 def createTree(alignedSequences, directory = None):
-	defaultDir = MEDIA_ROOT+'images/'
+	defaultDir = 'test-output/'
 	pictureName = 'topology'+unicode(datetime.now())
 	if directory != None:
 		defaultDir = directory
-	
-	
+		
 	graph = topo.Topology(len(alignedSequences))
 	align = alignment.SequenceAligner()
+	
 	for i in range(len(alignedSequences)):
 		sequences = []
 		sequences.append(alignedSequences[i])
@@ -45,11 +43,9 @@ def createTree(alignedSequences, directory = None):
 	ts.show_scale = False
 	tree.render("{}{}.png".format(defaultDir, pictureName), units="mm",tree_style=ts )
 	
-	
-	#return os.path.abspath("{}{}".format(defaultDir, pictureName))+'.png'
-	return "{}{}".format(defaultDir, pictureName) +'.png'
+	return os.path.abspath("{}{}".format(defaultDir, pictureName))
 
-'''
+
 sample = []
 sample.append("AAAAAAAAAAAAAAAAAAAAAAAAA")
 sample.append("CCCCAAAAAAAAAAAAAAAAAAAAA")
@@ -60,4 +56,3 @@ sample.append("AATTTAAAAAAAAAATCCAAAAAAA")
 
 tree = createTree(sample)
 print tree
-'''

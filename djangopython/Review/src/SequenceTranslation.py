@@ -7,40 +7,69 @@ Created on Feb 4, 2015
 '''
  Iterates through the list and converts the DNA sequence to a RNA sequence.
 '''
-def DNAToRNA(seq):
-    RNA = ""
-    for letter in seq:
+def DNAToRNA(sequence):
+    RNA = ''
+    
+    for letter in sequence:
         if letter == 'A':
-            RNA+='U'
+            RNA += 'U'
             
         elif letter == 'T':
-            RNA+='A'
+            RNA += 'A'
             
         elif letter == 'C':
-            RNA+='G'
+            RNA += 'G'
             
         elif letter == 'G':
-            RNA+='C'
+            RNA += 'C'
+        else:
+            raise ValueError("DNAToRNA:  Invalid nucleotide")
             
     return RNA
 
 '''
- Iterates through the list and converts the RNA sequence to a DNA sequence.
+ Iterates through the list and reverses the DNA sequence.
 '''
-def RNAtoDNA(seq):
-    DNA = ""
-    for letter in seq:
+def reverseDNA(sequence):
+    DNA = ''
+    
+    for letter in sequence:
         if letter == 'A':
-            DNA+='T'
+            DNA += 'T'
             
-        elif letter == 'U':
-            DNA+='A'
+        elif letter == 'T':
+            DNA += 'A'
             
         elif letter == 'C':
-            DNA+='G'
+            DNA += 'G'
             
         elif letter == 'G':
-            DNA+='C'
+            DNA += 'C'
+        else:
+            raise ValueError("reverseDNA:  Invalid nucleotide")
+            
+    return DNA
+
+'''
+ Iterates through the list and converts the RNA sequence to a DNA sequence.
+'''
+def RNAToDNA(sequence):
+    DNA = ''
+    
+    for letter in sequence:
+        if letter == 'A':
+            DNA += 'T'
+            
+        elif letter == 'U':
+            DNA += 'A'
+            
+        elif letter == 'C':
+            DNA += 'G'
+            
+        elif letter == 'G':
+            DNA += 'C'
+        else:
+            raise ValueError("RNAToDNA:  Invalid nucleotide")
             
     return DNA
 
@@ -49,7 +78,7 @@ def RNAtoDNA(seq):
  acid dictionary for the corresponding codon. It does this until the protein has
  been fully built.
 '''
-def RNAToProtien(seq):
+def RNAToProtein(sequence):
     amino = dict([('UUU', 'F'), ('UUC', 'F'), ('UUA', 'L'), ('UUG', 'L'), ('UCU', 'S'),
           ('UCC', 'S'), ('UCA', 'S'), ('UCG', 'S'), ('UAU', 'Y'), ('UAC', 'Y'),
           ('UAA', '*'), ('UAG', '*'), ('UGU', 'C'), ('UGC', 'C'), ('UGA', '*'),
@@ -63,21 +92,28 @@ def RNAToProtien(seq):
           ('GUA', 'V'), ('GUG', 'V'), ('GCU', 'A'), ('GCC', 'A'), ('GCA', 'A'),
           ('GCG', 'A'), ('GAU', 'D'), ('GAC', 'D'), ('GAA', 'E'), ('GAG', 'E'),
           ('GGU', 'G'), ('GGC', 'G'), ('GGA', 'G'), ('GGG', 'G')])
-    protien = ""
+    protein = ''
     counter = 0
-    codon = ""
+    codon = ''
     
-    for letter in seq:
+    for letter in sequence:
         if counter == 3:
             counter = 0
-            protien+=amino[codon]
-            codon = ''
+            if not amino.has_key(codon):
+                raise ValueError("RNAToProtien:  Invalid codon")
             
-        codon+=letter
+            protein += amino[codon]
+            codon = ''
+
+            
+        
+        codon += letter
         counter = counter + 1
         
     if counter == 3:
-        protien+=amino[codon]
+        if not amino.has_key(codon):
+                raise ValueError("RNAToProtien:  Invalid codon")
+            
+        protein += amino[codon]
         
-    return protien
-    
+    return protein

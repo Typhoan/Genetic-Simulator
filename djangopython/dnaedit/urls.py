@@ -9,15 +9,14 @@ from dnaedit import views
 urlpatterns = patterns('',
 
     url(r'^$', views.index, name='index'),
-    url(r'^lab/(?P<lab_id>\d+)/$', views.labSelection, name='labSelect'),
     url(r'^display/$', views.showFiles, name='display'),
     url(r'^fileSelect/$', views.fileSelection, name='fileSelect'),
-    url(r'^species/$', views.species, name='species'),
     url(r'^aligned/$', views.generateOutput, name='aligned'),
     url(r'^upload/$', views.uploadFile, name='upload'),
     url(r'^dna/$', views.fileSparse, name='dna'),
     url(r'^ajaxTest/$', views.getDNAInformation, name='dnaInfo'),
     url(r'^ajaxDemo/$', views.fileSelectionAjax, name='ajaxFiles'),
     url(r'^ajaxDisplay/$', views.ajaxShowFiles, name='ajaxDisplay'),
+    
     
 )

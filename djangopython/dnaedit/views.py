@@ -3,11 +3,13 @@ from django.template import RequestContext, loader
 from dnaedit.models import Lab, Species, LabFile
 import python.SequenceAligner as Aligner
 import python.TreeBuilder as TB
-import python.SequenceTranscription as ST
+import python.SequenceTranslation as ST
 import python.DNAFileDict as DNAFile
 import python.QueryChecks as Checks
 from django.http.response import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from djangopython.settings import MEDIA_ROOT
+import time
 # Create your views here.
 
 def index(request):
@@ -18,9 +20,10 @@ def index(request):
     context = RequestContext(request, {'labs': labs})
     return HttpResponse(template.render(context))
 
-def labSelection(request, lab_id):
-    labName = Lab.objects.filter(id=lab_id)[0].lab_name
-    return HttpResponse("The lab you selected is: %s" % labName)
+def imageShow(request, imageName):
+    
+    image_data = open(MEDIA_ROOT+"images/"+imageName, "rb").read()
+    return HttpResponse(image_data, content_type="image/png")
 
 def showFiles(request):
     template = loader.get_template('dnaedit/showFiles.html')
@@ -44,12 +47,6 @@ def fileSelection(request):
     
     return HttpResponse(template.render(context))
 
-def species(request):
-    template = loader.get_template('dnaedit/secondary.html')
-    
-    context = RequestContext(request)
-    return HttpResponse(template.render(context))
-
 def generateOutput(request):
     spes = []
     if request.method == 'POST':
@@ -70,14 +67,14 @@ def generateOutput(request):
         for strand in spes:
             rna.append(ST.DNAToRNA(strand))
         
-        protien = []
+        protein = []
         for strings in rna:
-            protien.append(ST.RNAToProtien(strings))
+            protein.append(ST.RNAToProtein(strings))
         #x,y = alignSequences(dna[0], dna)
         #align_output = createTree(spes)
             
     template = loader.get_template('dnaedit/demoPage.html')
-    context = RequestContext(request, {'rnas': rna, 'protiens':protien, 'tree': tree, 'dot_matrix':dotMatrix})
+    context = RequestContext(request, {'rnas': rna, 'proteins':protein, 'tree': tree, 'dot_matrix':dotMatrix})
     
     return HttpResponse(template.render(context))
 
@@ -114,6 +111,7 @@ def fileHandler(request):
     
     return HttpResponse(template.render(context))
 
+@csrf_exempt
 def fileSparse(request):
     message=""
     if request.method == 'POST':
@@ -198,14 +196,16 @@ def getDNAInformation(request):
             rna[key[keyIterator]]=ST.DNAToRNA(strand)
             keyIterator += 1
             
-        protien = {}
+        protein = {}
 
         for k in range(int(postCount)):
-            protien[key[k]] = ST.RNAToProtien(rna[key[k]])
+            protein[key[k]] = ST.RNAToProtein(rna[key[k]])
         #x,y = alignSequences(dna[0], dna)
         #align_output = createTree(spes)
         
-    responseDict = {'keys':key ,'rnaSequences': rna, 'proteinSequences':protien, 'tree': tree, 'dotMatrix':dotMatrixSend}
+        time.sleep(10)
+        
+    responseDict = {'keys':key ,'rnaSequences': rna, 'proteinSequences':protein, 'tree': tree, 'dotMatrix':dotMatrixSend}
     response = JsonResponse(responseDict)
     
     return response
