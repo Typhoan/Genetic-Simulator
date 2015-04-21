@@ -1265,7 +1265,7 @@
 	padding-right: 20px;
 	float: left; 
 	display: block;
-	/*position: absolute;*/
+	position: absolute;
 	margin-left: 100px;
 	overflow: auto;
 	overflow-y: hidden;

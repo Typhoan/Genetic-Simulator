@@ -92,17 +92,6 @@
 					<a href="#first" class="button style2 scrolly">Select Sequences</a>
 				</footer>
 			</section>
-			
-			<!-- <article class="container box style1 left">
-				<a href="#" class="image fit"><img src="images/pic02.jpg" alt="" /></a>
-				<div class="inner">
-					<header>
-						<h2>Mollis posuere<br />
-						lectus lacus</h2>
-					</header>
-					<p>Rhoncus mattis egestas sed fusce sodales rutrum et etiam ullamcorper. Etiam egestas scelerisque ac duis magna lorem ipsum dolor.</p>
-				</div>
-			</article> -->
 
 		<!-- Portfolio -->
 			<article class="container box style2">
@@ -321,7 +310,7 @@
 			</ul>
 			<div class="copyright">
 				<ul class="menu">
-					<li>&copy; Untitled. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+					<li>&copy; DNA Studio. All rights reserved.</li><li>For more information visit: <a href="http://www.auburn.edu/cosam/departments/biology/">AU Biology</a></li>
 				</ul>
 			</div>
 		</section>
@@ -372,18 +361,18 @@
 			}
 			
 			
-			function getCharacterOffsetWithin(range, node) {
-				var treeWalker = document.createTreeWalker(
-					node,
-					NodeFilter.SHOW_TEXT,
+			<!-- function getCharacterOffsetWithin(range, node) {
+				<!-- var treeWalker = document.createTreeWalker(
+					<!-- node,
+					/*NodeFilter.SHOW_TEXT,
 					function(node) {
 						var nodeRange = document.createRange();
 						nodeRange.selectNodeContents(node);
 						return nodeRange.compareBoundaryPoints(Range.END_TO_END, range) < 1 ?
 							NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
 					},
-					false
-				);
+					false -->
+				); -->
 
 				var charCount = 0;
 				while (treeWalker.nextNode()) {
@@ -393,14 +382,20 @@
 					charCount += range.startOffset;
 				}
 				return charCount;
-			}
+			} -->*/
 
 			document.body.addEventListener("mouseup", function() {
-				var el = document.getElementById("test");
-				var range = window.getSelection().getRangeAt(0);
-				<!-- console.log("Caret char pos: " + getCharacterOffsetWithin(range, el)) -->
-				var label = document.getElementById("positionLabel");
-				label.innerHTML = getCharacterOffsetWithin(range, el) + '/250';
+				if (document.getSelection().anchorNode.parentNode.className == "textbox"){
+					var el = document.getElementsByClassName("textbox");
+					var range = document.getSelection().getRangeAt(0);
+					var label = document.getElementById("positionLabel");
+					label.innerHTML = range.endOffset + '/250';
+				}
+				else{
+					var range = 0;
+					var label = document.getElementById("positionLabel");
+					label.innerHTML = range + '/250';
+				}
 			}, false);
 			
 			$('#test').keypress(function(event) {
