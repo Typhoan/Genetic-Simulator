@@ -5,18 +5,34 @@ Created on Apr 4, 2015
 @author: Alexander Calvert
 
 '''
-
+import os
 from subprocess import check_output
 import DNAFileDict
 import tempfile
+from ctypes import *
 
 '''
 class to perform sequence alignment and related operations
 '''
 class SequenceAligner:
 
-    def __init__(self):
-        pass
+    '''
+    constructor
+    note: either libalign.so must be in the same directory as this file, or libalign.so's path must
+    be passed as an argument to __init__
+    '''
+    def __init__(self, libAbsPath=None):
+        self._lib = None
+        if libAbsPath == None:
+            try:
+                self._lib = CDLL(os.path.join(os.path.abspath(os.path.dirname(__file__)), "libalign.so"))
+            except:
+                raise ValueError("could not find libalign.so in current directory " + os.path.join(os.path.abspath(os.path.dirname(__file__))))
+        else:
+            try:
+                self._lib = CDLL(libAbsPath)
+            except:
+                raise ValueError("could not find libalign.so in " + libAbsPath)
 
     '''
     get a list of distances from sequences to a dominant sequence
@@ -25,7 +41,7 @@ class SequenceAligner:
     @return distanceMatrix - the distance matrix as a Python list
     '''
     def getDistanceMatrix(self, alignedSequences):
-        """ get list of distances between dominant and subdominant sequences"""
+        ''' get list of distances between dominant and subdominant sequences'''
         if not alignedSequences:
             raise ValueError("alignedSequences must not be empty")
         dominantAlignedSequence = alignedSequences[0]
@@ -40,11 +56,11 @@ class SequenceAligner:
                 i += 1
             distanceMatrix.append(distance)
         return distanceMatrix
-		
+
 
     '''
     gives a dot matrix (alignment with similar nucleotides replaced with dots)
-    
+
     @param alignedSequences - list of sequence for distance calculation, assumed to be already aligned
     @return dotMatrix - the dot matrix
     '''
@@ -66,7 +82,7 @@ class SequenceAligner:
 
     '''
     gives a dot matrix (alignment with similar nucleotides replaced with dots)
-    
+
     @param dominantName - the name of the dominant sequence
     @param alignedSequences - the aligned sequences as a name->seq dict
     @return dotMatrix - the dot matrix as a name->seq dict
@@ -91,6 +107,50 @@ class SequenceAligner:
         dotMatrix[domName] = domSeq
         return dotMatrix
 
+    def _getLongestLength(self, listOfLists):
+        ''' gets length of longest list from a list of lists '''
+        max = -1
+        for list in listOfLists:
+            if len(list) > max:
+                max = len(list)
+        return max
+
+    def _getAlignmentsFromAlignmentNumbers(self, domName, seqMatrix, numbers):
+        ''' convert returned number from libalign.so function to a list of aligned sequences '''
+        seqs =  dict()
+        domSeq = seqMatrix[domName]
+        subdomSeqs = dict(seqMatrix)
+        del subdomSeqs[domName]
+
+        longestSubLen = self._getLongestLength(subdomSeqs.values())
+        numStartDashes = longestSubLen - 1
+        numEndDashes = longestSubLen - 1
+
+        dom = ["-"] * (2*longestSubLen + len(domSeq) - 2)
+        dom[longestSubLen-1:longestSubLen+len(domSeq)-1] = domSeq
+        seqs[domName] = ''.join(dom)
+
+        i = 0
+        for name, seq in subdomSeqs.iteritems():
+            s = ["-"] * (2*longestSubLen + len(domSeq) - 2)
+            s[longestSubLen-len(seq)+numbers[i]:longestSubLen+numbers[i]] = seq
+            seqs[name] = ''.join(s)
+            if(longestSubLen-len(seq)+numbers[i] < numStartDashes):
+                numStartDashes = longestSubLen-len(seq)+numbers[i]
+            if((longestSubLen+len(domSeq)-2-numbers[i]) < numEndDashes):
+                numEndDashes = longestSubLen+len(domSeq)-2-numbers[i]
+            i += 1
+        return {name:seq[numStartDashes:len(s)-numEndDashes] for name, seq in seqs.iteritems()}
+
+    def alignSequencesUngapped(self, domName, seqMatrix):
+        ''' use libalign.so to align sequences to a dominant sequence '''
+        nums = []
+        domSeq = seqMatrix[domName]
+        for name, seq in seqMatrix.iteritems():
+            nums.append(self._lib.alignSequencePair(c_char_p(domSeq), c_char_p(seq)))
+        alignment = self._getAlignmentsFromAlignmentNumbers(domName, seqMatrix, nums)
+        return alignment
+
 
     '''
     performs a multiple alignment on a list of sequences using Clustal Omega
@@ -112,7 +172,7 @@ class SequenceAligner:
             dout = DNAFileDict.DNAFileDict(fastaOut.name)
             dout.setLists()
             return dout.getDNADict()
-           
+
 '''
 sample = dict()
 sample["s1"] = "TTTTTTTT"
@@ -124,5 +184,17 @@ for k, v in seqs.iteritems(): print k, v
 print ""
 seqs = a.generateDotMatrix("s1", seqs)
 for k, v in seqs.iteritems(): print k, v
+
+
+sample = dict()
+sample["s1"] = "AAGAGACACACGGATTATAGAC"
+sample["s2"] = "TTTGGGGGGGGCCCTTTATAAT"
+sample["s3"] = "GGGTAAACCACACACATGTGTT"
+sample["s4"] = "ATTTTGGGGTATATACCCCCCC"
+sample["s5"] = "GGGGGGGGGGGCCCTTATTTAG"
+a = SequenceAligner()
+seqs = a.alignSequencesUngapped("s1", sample)
+for n, s in seqs.iteritems(): print n, s
 '''
+
 
