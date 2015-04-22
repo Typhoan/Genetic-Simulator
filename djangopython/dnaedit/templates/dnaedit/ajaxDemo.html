@@ -20,7 +20,7 @@
 	
 	<button type="button" id="sequenceSubmit">Submit</button>
 </form>
-
+<button id="testSubmit">Test Ajax</button>
 <button id="waveformDisplay">Show Waveform</button><br/><br/>
 
 <button id="displayRNA">RNA Sequences</button>
@@ -97,7 +97,109 @@ function setTopTree(treeStuff){
 	$("#topTree").html(replacement);
 }
 
+function rnaTest(rnaSeq){
+	
+$.ajax({
+			
+				url:"{% url 'dnaedit:rnatodna' %}",
+				type: "POST",
+				data: {"rna": rnaSeq},
+				success: function(data){
+				
+						//var jsonParse = JSON.parse(data);
+						console.log(data);
+						
+					},
+				
+			});
+			$.ajax({
+			
+				url:"{% url 'dnaedit:rnatoprotein' %}",
+				type: "POST",
+				data: {"rna": rnaSeq},
+				success: function(data){
+				
+						//var jsonParse = JSON.parse(data);
+						console.log(data);
+						
+					},
+				
+			});
+}
 
+$("#testSubmit").click(function(){
+		
+			var dataInfo = {"Frog": "ATGTTGGAAACCC", "Pig": "ATTGGTTTAAACCCCCCCAAATTT"};
+			var dataString = JSON.stringify(dataInfo);
+			var dataSend = {"dna": dataString};
+			$.ajax({
+			
+				url:"{% url 'dnaedit:dnatoprotein' %}",
+				type: "POST",
+				data: {"dna": dataString},
+				success: function(data){
+				
+						//var jsonParse = JSON.parse(data);
+						console.log(data);
+						
+					},
+				
+			});
+			
+			$.ajax({
+			
+				url:"{% url 'dnaedit:dnatorna' %}",
+				type: "POST",
+				data: {"dna": dataString},
+				success: function(data){
+				
+						//var jsonParse = JSON.parse(data);
+						console.log(data);
+						rnaTest(JSON.stringify(data.rna));
+					},
+				
+			});
+			$.ajax({
+			
+				url:"{% url 'dnaedit:inverseDna' %}",
+				type: "POST",
+				data: {"dna": dataString},
+				success: function(data){
+				
+						//var jsonParse = JSON.parse(data);
+						console.log(data);
+						
+					},
+				
+			});
+			$.ajax({
+			
+				url:"{% url 'dnaedit:distanceMatrix' %}",
+				type: "POST",
+				data: {"aligned_sequences": dataString},
+				success: function(data){
+				
+						//var jsonParse = JSON.parse(data);
+						console.log(data);
+						
+					},
+				
+			});
+			$.ajax({
+			
+				url:"{% url 'dnaedit:blaze' %}",
+				type: "POST",
+				data: {"sequence": $("#speciesValue1").val()},
+				success: function(data){
+				
+						//var jsonParse = JSON.parse(data);
+						console.log(data);
+						
+					},
+				
+			});
+
+	});
 
 
 $("#sequenceSubmit").click(function(){

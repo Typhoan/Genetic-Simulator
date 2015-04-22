@@ -3,6 +3,7 @@
 {% block pagetitle %}Starting Page{% endblock %}
 
 {% block content %}
+<!--
 
 <form method='post' action='{% url 'dnaedit:dna' %}' enctype='multipart/form-data'> {% csrf_token %}
 	<input type='text' name='labname' value='Input Lab Name Here'/> <input type='file' name='group_file'/>
@@ -12,5 +13,38 @@
 {% if message %}
 	<p>{{ message }}</p>
 {% endif %}
+
+-->
+<form id="uploadImage" enctype="multipart/form-data">
+    <input name="labname" type="text" placeholder="Type lab name here."/> <input name="lab_file" type="file" />
+    <input type="button" value="Upload"/>
+</form>
+
+
+{% endblock %}
+
+
+{% block js %}
+
+<script>
+
+
+$(':button').click(function(){
+    var formData;
+    formData = new FormData($('form')[0]);
+    $.ajax({
+    	url: "{% url 'dnaedit:postFile' %}",
+    	type: "POST",
+    	data: formData,
+    	processData: false,  // tell jQuery not to process the data
+  		contentType: false,   // tell jQuery not to set contentType
+    	success: function(data){
+    		console.log(data);
+    	},
+    
+    });
+});
+
+</script>
 
 {% endblock %}
