@@ -6,10 +6,19 @@ Created on Apr 4, 2015
 
 '''
 import os
-from subprocess import check_output
 import DNAFileDict
 import tempfile
 from ctypes import *
+from subprocess import *
+
+'''
+custom exception for Clustal Omega failures
+'''
+class ClustalOmegaError(Exception):
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)  
 
 '''
 class to perform sequence alignment and related operations
@@ -88,6 +97,8 @@ class SequenceAligner:
     @return dotMatrix - the dot matrix as a name->seq dict
     '''
     def generateDotMatrix(self, domName, alignedSeqs):
+        if domName not in alignedSeqs.keys():
+            raise ValueError("dominant sequence is not in the sequence matrix")
         dotMatrix = dict()
 
         #get copy of the alignment and remove dominant sequence from it
@@ -107,6 +118,12 @@ class SequenceAligner:
         dotMatrix[domName] = domSeq
         return dotMatrix
 
+    '''
+    private method to get the length of the longest string in a list of strings
+    
+    @param listOfLists - list of strings (or lists, actually) to search
+    @return the longest length
+    '''
     def _getLongestLength(self, listOfLists):
         ''' gets length of longest list from a list of lists '''
         max = -1
@@ -114,7 +131,13 @@ class SequenceAligner:
             if len(list) > max:
                 max = len(list)
         return max
+    '''
+    private method use to convert values returned form libalign into a dict
 
+    @param domName - name of the dominant sequence
+    @param seqMatrix - the unaligned sequences as a name->seq dict
+    @numbers - the numbers returned by libalign for the given sequence matrix
+    '''
     def _getAlignmentsFromAlignmentNumbers(self, domName, seqMatrix, numbers):
         ''' convert returned number from libalign.so function to a list of aligned sequences '''
         seqs =  dict()
@@ -130,24 +153,31 @@ class SequenceAligner:
         dom[longestSubLen-1:longestSubLen+len(domSeq)-1] = domSeq
         seqs[domName] = ''.join(dom)
 
-        i = 0
         for name, seq in subdomSeqs.iteritems():
             s = ["-"] * (2*longestSubLen + len(domSeq) - 2)
-            s[longestSubLen-len(seq)+numbers[i]:longestSubLen+numbers[i]] = seq
+            s[longestSubLen-len(seq)+numbers[name]:longestSubLen+numbers[name]] = seq
             seqs[name] = ''.join(s)
-            if(longestSubLen-len(seq)+numbers[i] < numStartDashes):
-                numStartDashes = longestSubLen-len(seq)+numbers[i]
-            if((longestSubLen+len(domSeq)-2-numbers[i]) < numEndDashes):
-                numEndDashes = longestSubLen+len(domSeq)-2-numbers[i]
-            i += 1
-        return {name:seq[numStartDashes:len(s)-numEndDashes] for name, seq in seqs.iteritems()}
+            if(longestSubLen-len(seq)+numbers[name] < numStartDashes):
+                numStartDashes = longestSubLen-len(seq)+numbers[name]
+            if((longestSubLen+len(domSeq)-2-numbers[name]) < numEndDashes):
+                numEndDashes = longestSubLen+len(domSeq)-2-numbers[name]
+        return {name:seq[numStartDashes:len(seq)-numEndDashes] for name, seq in seqs.iteritems()}
 
+    '''
+    old alignment algorithm - essentially repeated pairwise alignment with no gaps breaking up sequences
+    
+    @param domName - the name of the dominant sequence
+    @param seqMatrix - the sequence matrix as a name->seq dict
+    @returns a name->seq dict of the aligned sequences
+    '''
     def alignSequencesUngapped(self, domName, seqMatrix):
         ''' use libalign.so to align sequences to a dominant sequence '''
-        nums = []
+        if domName not in seqMatrix.keys():
+            raise ValueError("dominant sequence is not in the sequence matrix")
+        nums = dict()
         domSeq = seqMatrix[domName]
         for name, seq in seqMatrix.iteritems():
-            nums.append(self._lib.alignSequencePair(c_char_p(domSeq), c_char_p(seq)))
+            nums[name] = self._lib.alignSequencePair(c_char_p(domSeq), c_char_p(seq))
         alignment = self._getAlignmentsFromAlignmentNumbers(domName, seqMatrix, nums)
         return alignment
 
@@ -166,7 +196,10 @@ class SequenceAligner:
                 fastaIn.write(">" + name + "\n")
                 fastaIn.write(seq + "\n")
             fastaIn.seek(0)
-            output = check_output(["clustalo", "-i", fastaIn.name, "--outfmt=fasta"])
+            try:
+                output = check_output(["clustalo", "-i", fastaIn.name, "--outfmt=fasta"])
+            except CalledProcessError:
+                raise ClustalOmegaError("Clustal Omega returned non-zero status")
             fastaOut.write(output)
             fastaOut.seek(0)
             dout = DNAFileDict.DNAFileDict(fastaOut.name)
