@@ -184,9 +184,9 @@ def sendFileSequences(request):
 @csrf_exempt
 def getTopologyFilePath(request):
     if request.method == 'POST':
-        allignedSeq = j.loads(request.POST.get('aligned_sequences'))
+        allignedSeq = j.loads(request.POST.get('unaligned_sequences'))
     elif request.method == 'GET':
-        allignedSeq = j.loads(request.GET.get('aligned_sequences'))
+        allignedSeq = j.loads(request.GET.get('unaligned_sequences'))
         
     if allignedSeq:
         try:
@@ -197,7 +197,7 @@ def getTopologyFilePath(request):
     else:
         return HttpResponse(status=400, reason='No information was given.')
         
-    responseDict = {'filePath': treePath}
+    responseDict = {'file_path': treePath}
     response = JsonResponse(responseDict)
     
     return response
@@ -212,9 +212,9 @@ def getTopologyFilePath(request):
 @csrf_exempt
 def getTopologyTreeString(request):
     if request.method == 'POST':
-        allignedSeq = j.loads(request.POST.get('aligned_sequences'))
+        allignedSeq = j.loads(request.POST.get('unaligned_sequences'))
     elif request.method == 'GET':
-        allignedSeq = j.loads(request.GET.get('aligned_sequences'))
+        allignedSeq = j.loads(request.GET.get('unaligned_sequences'))
         
     if allignedSeq:
         try:
@@ -227,7 +227,7 @@ def getTopologyTreeString(request):
     
 
         
-    responseDict = {'filePath': treeString}
+    responseDict = {'tree_string': treeString}
     response = JsonResponse(responseDict)
     
     return response
@@ -450,12 +450,12 @@ def getBlazeReport(request):
 @csrf_exempt
 def getDistanceMatrix(request):
     if request.method == 'POST':
-        allignedSeq = j.loads(request.POST.get('aligned_sequences'))
+        alignedSeq = j.loads(request.POST.get('unaligned_sequences'))
     elif request.method == 'GET':
-        allignedSeq = j.loads(request.GET.get('aligned_sequences'))
+        alignedSeq = j.loads(request.GET.get('unaligned_sequences'))
         
-    elif allignedSeq:
-        tree = TB.TreeBuilder(allignedSeq)
+    elif alignedSeq:
+        tree = TB.TreeBuilder(alignedSeq)
         distanceMatrix = tree.getDistanceMatrix()
         '''
         try:
@@ -467,7 +467,7 @@ def getDistanceMatrix(request):
     else:
         return HttpResponse(status=400, reason='No information was given.')
         
-    responseDict = {'distanceMatrix': distanceMatrix}
+    responseDict = {'distance_matrix': distanceMatrix}
     response = JsonResponse(responseDict)
     
     return response
@@ -482,9 +482,9 @@ def getDistanceMatrix(request):
 @csrf_exempt
 def getDistanceMatrixString(request):
     if request.method == 'POST':
-        allignedSeq = j.loads(request.POST.get('aligned_sequences'))
+        allignedSeq = j.loads(request.POST.get('unaligned_sequences'))
     elif request.method == 'GET':
-        allignedSeq = j.loads(request.GET.get('aligned_sequences'))
+        allignedSeq = j.loads(request.GET.get('unaligned_sequences'))
         
     if allignedSeq:
         try:
@@ -495,7 +495,7 @@ def getDistanceMatrixString(request):
     else:
         return HttpResponse(status=400, reason='No information was given.')
         
-    responseDict = {'distanceMatrix': distanceMatrixString}
+    responseDict = {'distance_matrix': distanceMatrixString}
     response = JsonResponse(responseDict)
     
     return response
@@ -511,10 +511,10 @@ def uploadLabFile(request):
     message=""
     if request.method == 'POST':
         strands = request.FILES['lab_file']
-        labName = request.POST.get('labname', False)
+        labName = request.POST.get('lab_name', False)
     elif request.method == 'GET':
         strands = request.FILES['lab_file']
-        labName = request.GET.get('labname', False)
+        labName = request.GET.get('lab_name', False)
     if strands:
         try:
             strandsName = strands.name
