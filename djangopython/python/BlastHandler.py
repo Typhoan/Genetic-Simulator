@@ -16,7 +16,6 @@ would want but from our website instead of having to use Blast.
 from Bio.Blast import NCBIWWW
 from Bio.Blast import NCBIXML
 from string import upper
-import signal
 from urllib2 import URLError
 
 class BlastHandler(object):

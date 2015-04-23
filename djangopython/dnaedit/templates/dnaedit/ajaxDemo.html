@@ -163,9 +163,35 @@ $("#testSubmit").click(function(){
 			});
 			$.ajax({
 			
-				url:"{% url 'dnaedit:distanceMatrix' %}",
+				url:"{% url 'dnaedit:dotMatrix' %}",
 				type: "POST",
-				data: {"aligned_sequences": dataString},
+				data: {"sequences": dataString, "dominant_species":"Frog"},
+				success: function(data){
+				
+						//var jsonParse = JSON.parse(data);
+						console.log(data);
+						
+					},
+				
+			});
+			$.ajax({
+			
+				url:"{% url 'dnaedit:topologyFile' %}",
+				type: "POST",
+				data: {"unaligned_sequences": dataString},
+				success: function(data){
+				
+						//var jsonParse = JSON.parse(data);
+						console.log(data);
+						
+					},
+				
+			});
+			$.ajax({
+			
+				url:"{% url 'dnaedit:align' %}",
+				type: "POST",
+				data: {"dna": dataString},
 				success: function(data){
 				
 						//var jsonParse = JSON.parse(data);

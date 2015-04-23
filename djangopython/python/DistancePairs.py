@@ -7,8 +7,10 @@ class DistancePairs:
     distance = -1
     sequence1 = -1
     sequence2 = -1
+    name1 = ""
+    name2 = ""
     
-    def __init__(self, dist, seq1, seq2):
+    def __init__(self, dist, seq1, seq2, name1, name2):
         if dist == None or seq1 == None or seq2 == None:
             raise ValueError("DistancePairs.__init__:  invalid parameters")
         if seq1 == seq2:
@@ -18,6 +20,5 @@ class DistancePairs:
         self.distance = dist
         self.sequence1 = seq1
         self.sequence2 = seq2
-        
-    def printDP(self):
-        print str(self.distance) + ' ' + str(self.sequence1) + ' ' + str(self.sequence2)
+        self.name1 = name1
+        self.name2 = name2

@@ -138,10 +138,7 @@ def sendFiles(request):
     elif request.method == 'GET':
         labId = request.GET.get('lab_id')
     else:
-        responseDict = {'error': 'there was no data'}
-        response = JsonResponse(responseDict)
-    
-        return response
+        return HttpResponse(status=400, reason='No information was given.')
         
     
     lab = Lab.objects.filter(id = labId)[0]
@@ -162,10 +159,7 @@ def sendFileSequences(request):
     elif request.method == 'GET':
         file_id = request.GET.get('file_id')
     else:
-        responseDict = {'error': 'there was no data'}
-        response = JsonResponse(responseDict)
-        
-        return response
+        return HttpResponse(status=400, reason='No information was given.')
     
     labFile = LabFile.objects.filter(id=file_id)[0]
     dna = Species.objects.filter(fileName=labFile)
@@ -184,13 +178,15 @@ def sendFileSequences(request):
 @csrf_exempt
 def getTopologyFilePath(request):
     if request.method == 'POST':
-        allignedSeq = j.loads(request.POST.get('unaligned_sequences'))
+        unalignedSeq = j.loads(request.POST.get('unaligned_sequences'))
     elif request.method == 'GET':
-        allignedSeq = j.loads(request.GET.get('unaligned_sequences'))
+        unalignedSeq = j.loads(request.GET.get('unaligned_sequences'))
         
-    if allignedSeq:
+    if unalignedSeq:
         try:
-            tree = TB.TreeBuilder(allignedSeq)
+            align = Aligner.SequenceAligner()
+            alignedSeq = align.alignSequences(unalignedSeq)
+            tree = TB.TreeBuilder(alignedSeq)
             treePath = tree.createTree()
         except Exception as e:
             return HttpResponse(status=400, reason=str(e))
@@ -212,16 +208,18 @@ def getTopologyFilePath(request):
 @csrf_exempt
 def getTopologyTreeString(request):
     if request.method == 'POST':
-        allignedSeq = j.loads(request.POST.get('unaligned_sequences'))
+        unalignedSeq = j.loads(request.POST.get('unaligned_sequences'))
     elif request.method == 'GET':
-        allignedSeq = j.loads(request.GET.get('unaligned_sequences'))
+        unalignedSeq = j.loads(request.GET.get('unaligned_sequences'))
         
-    if allignedSeq:
-        try:
-            tree = TB.TreeBuilder(allignedSeq)
-            treeString = tree.createTreeString()
-        except Exception as e:
-            return HttpResponse(status=400, reason=str(e))
+    if unalignedSeq:
+        #try:
+        align = Aligner.SequenceAligner()
+        alignedSeq = align.alignSequences(unalignedSeq)
+        tree = TB.TreeBuilder(alignedSeq)
+        treeString = tree.createTreeString()
+        #except Exception as e:
+        #    return HttpResponse(status=400, reason=str(e))
     else:
         return HttpResponse(status=400, reason='No information was given.')
     
@@ -397,7 +395,25 @@ def getProteinFromDNA(request):
 '''
 @csrf_exempt
 def getAlignedSequences(request):
-    return 0
+    if request.method == 'POST':
+        unalignedSeq = j.loads(request.POST.get('dna'))
+    elif request.method == 'GET':
+        unalignedSeq = j.loads(request.GET.get('dna'))
+        
+    if unalignedSeq:
+        try:
+            align = Aligner.SequenceAligner()
+            alignedSeq = align.alignSequences(unalignedSeq)
+            
+        except Exception as e:
+            return HttpResponse(status=400, reason=str(e))
+    else:
+        return HttpResponse(status=400, reason='No information was given.')
+        
+    responseDict = {'aligned_sequences': alignedSeq}
+    response = JsonResponse(responseDict)
+    
+    return response
 
 
 '''
@@ -409,7 +425,29 @@ def getAlignedSequences(request):
 '''
 @csrf_exempt
 def getDotMatrix(request):
-    return 0
+    if request.method == 'POST':
+        unalignedSeq = j.loads(request.POST.get('sequences'))
+        seqName = request.POST.get('dominant_species')
+    elif request.method == 'GET':
+        unalignedSeq = j.loads(request.GET.get('sequences'))
+        seqName = request.GET.get('dominant_species')
+        
+    if unalignedSeq:
+        try:
+            align = Aligner.SequenceAligner()
+            alignedSeq = align.alignSequences(unalignedSeq)
+            dotMatrix = align.generateDotMatrix(seqName, alignedSeq)
+            
+        except Exception as e:
+            return HttpResponse(status=400, reason=str(e))
+    else:
+        return HttpResponse(status=400, reason='No information was given.')
+        
+    responseDict = {'dot_matrix': dotMatrix}
+    response = JsonResponse(responseDict)
+    
+    return response
+
 
 '''
     Send a report of the sequence posted.
@@ -450,11 +488,13 @@ def getBlazeReport(request):
 @csrf_exempt
 def getDistanceMatrix(request):
     if request.method == 'POST':
-        alignedSeq = j.loads(request.POST.get('unaligned_sequences'))
+        unalignedSeq = j.loads(request.POST.get('unaligned_sequences'))
     elif request.method == 'GET':
-        alignedSeq = j.loads(request.GET.get('unaligned_sequences'))
+        unalignedSeq = j.loads(request.GET.get('unaligned_sequences'))
         
-    elif alignedSeq:
+    if unalignedSeq:
+        align = Aligner.SequenceAligner()
+        alignedSeq = align.alignSequences(unalignedSeq)
         tree = TB.TreeBuilder(alignedSeq)
         distanceMatrix = tree.getDistanceMatrix()
         '''
@@ -482,13 +522,15 @@ def getDistanceMatrix(request):
 @csrf_exempt
 def getDistanceMatrixString(request):
     if request.method == 'POST':
-        allignedSeq = j.loads(request.POST.get('unaligned_sequences'))
+        unalignedSeq = j.loads(request.POST.get('unaligned_sequences'))
     elif request.method == 'GET':
-        allignedSeq = j.loads(request.GET.get('unaligned_sequences'))
+        unalignedSeq = j.loads(request.GET.get('unaligned_sequences'))
         
-    if allignedSeq:
+    if unalignedSeq:
         try:
-            tree = TB.TreeBuilder(allignedSeq)
+            align = Aligner.SequenceAligner()
+            alignedSeq = align.alignSequences(unalignedSeq)
+            tree = TB.TreeBuilder(alignedSeq)
             distanceMatrixString = tree.getDistanceMatrixAsString()
         except Exception as e:
             return HttpResponse(status=400, reason=str(e))
@@ -518,7 +560,7 @@ def uploadLabFile(request):
     if strands:
         try:
             strandsName = strands.name
-            filePath = DNAFile.handleUploadedFile(strands, strandsName, '')
+            filePath = DNAFile.handleUploadedFile(strands, strandsName, 'media/files/')
             DNAdict = DNAFile.DNAFileDict(filePath)
         
             isGoodFile = DNAdict.checkCorrectFileFormat()

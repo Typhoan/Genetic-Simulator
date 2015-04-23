@@ -26,7 +26,6 @@ urlpatterns = patterns('',
     url(r'^get/dnatorna/$',views.getRNAFromDNA,name='dnatorna'),
     url(r'^get/topology/$',views.getTopologyFilePath,name='topologyFile'),
     url(r'^get/topology/string/$',views.getTopologyTreeString,name='topologyString'),
-    url(r'^get/dotmatrix/string/$',views.getDistanceMatrixString,name='dotMatrixString'),
     url(r'^get/blaze/$',views.getBlazeReport,name='blaze')
     
 )
