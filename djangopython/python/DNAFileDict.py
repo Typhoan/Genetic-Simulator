@@ -98,7 +98,7 @@ class DNAFileDict(object):
             objectNucleotideList = []
             
             try:
-                fileOpen = open(self.fileName)
+                fileOpen = open(self.pathName)
             except IOError:
                 raise IOError("File Path not found in populateDict")  
             

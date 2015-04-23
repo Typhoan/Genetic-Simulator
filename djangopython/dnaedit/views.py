@@ -518,15 +518,15 @@ def uploadLabFile(request):
     if strands:
         try:
             strandsName = strands.name
-            name = DNAFile.handleUploadedFile(strands, strandsName, '')
-            DNAdict = DNAFile.DNAFileDict(fileName=name)
+            filePath = DNAFile.handleUploadedFile(strands, strandsName, '')
+            DNAdict = DNAFile.DNAFileDict(filePath)
         
             isGoodFile = DNAdict.checkCorrectFileFormat()
             lab = None
             labFile = None
         
             if isGoodFile:
-                DNAdict.setLists()
+                DNAdict.populateDict()
         
                 if labName:
                     if not Checks.checkLabNameExists(labName):
