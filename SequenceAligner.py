@@ -45,6 +45,8 @@ class SequenceAligner:
 
     '''
     get a list of distances from sequences to a dominant sequence
+    assumes sequences are already aligned; will not work if sequence 
+        strings (including gaps) are of different lengths
 
     @param alignedSequences - list of sequence for distance calculation, assumed to be already aligned
     @return distanceMatrix - the distance matrix as a Python list
