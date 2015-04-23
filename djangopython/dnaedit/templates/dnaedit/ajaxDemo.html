@@ -99,19 +99,8 @@ function setTopTree(treeStuff){
 
 function rnaTest(rnaSeq){
 	
-$.ajax({
-			
-				url:"{% url 'dnaedit:rnatodna' %}",
-				type: "POST",
-				data: {"rna": rnaSeq},
-				success: function(data){
-				
-						//var jsonParse = JSON.parse(data);
-						console.log(data);
-						
-					},
-				
-			});
+	var rna = getDNAFromRNA("{% url 'dnaedit:rnatodna' %}", rnaSeq);
+
 			$.ajax({
 			
 				url:"{% url 'dnaedit:rnatoprotein' %}",
