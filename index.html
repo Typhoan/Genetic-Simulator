@@ -166,6 +166,44 @@
 				<!-- $('#labSelection').html(labSelect); -->
 			}
 			
+			function fileNameSetup(files){
+				var fileSelect;
+				var fileId;
+				fileSelect = "{% csrf_token %}<select id='file' name='file_id'>";
+				fileSelect += "<option selected='selected'>Please Select a lab</option>";
+				for(fileId in files){
+					fileSelect += "<option value='"+fileId+"'>"+ files[fileId] +"</option>";
+				}
+				
+				fileSelect += "</select>";
+				fileSelect += "<br/><input type='submit'/>";
+				
+				var banner = getElementById('bannerHeader');
+				banner.appendChild(labSelect);
+				
+				<!-- $('#fileSend').html(fileSelect); -->
+				
+			}
+			
+			function sendLab(value){
+				
+					$.ajax({
+						
+							url:"{% url 'dnaedit:getFiles' %}",
+							type: "GET",
+							data: {'lab_id': value},
+							success: function(data){
+							
+									//var jsonParse = JSON.parse(data);
+									console.log(data);
+									
+									fileNameSetup(data.files)
+								},
+							
+						});
+				
+			}
+			
 			function getLabs(url){
 				$.ajax({
 					url: url,
