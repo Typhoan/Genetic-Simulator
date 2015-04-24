@@ -1,9 +1,4 @@
 <!DOCTYPE HTML>
-<!--
-	Overflow by HTML5 UP
-	html5up.net | @n33co
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
--->
 <html>
 	<head>
 		<title>DNA Studio</title>
@@ -37,12 +32,13 @@
 
 		<!-- Banner -->
 			<section id="banner">
-				<header>
+				<header id = "bannerHeader">
 					<h2>Select Files</h2>
 				</header>
-				<button> Browse </button>
+				<!-- <button> Browse </button>
 				<input type="text" readonly>
-				<button> Upload </button>
+				<button> Upload </button> -->
+				
 				<footer>
 					<a href="#sequences" class="button style2 scrolly">Select Sequences</a>
 				</footer>
@@ -78,7 +74,7 @@
 				</div>
 				
 				<footer>
-					<a href="#topology" class="button style2 scrolly">Select Sequences</a>
+					<a href="#topology" class="button style2 scrolly" onclick = "align()">Select Sequences</a>
 				</footer>
 			</section>
 
@@ -87,6 +83,8 @@
 				<header>
 					<h2>Topology</h2>
 				</header>
+				
+				
 				
 				<footer>
 					<a href="#first" class="button style2 scrolly">Select Sequences</a>
@@ -116,189 +114,6 @@
 				</div>
 			</article>
 
-		<!-- Contact -->
-			<!-- <article class="container box style3">
-				<header>
-					<h2>Nisl sed ultricies</h2>
-					<p>Diam dignissim lectus eu ornare volutpat orci.</p>
-				</header>
-				<form method="post" action="#">
-					<div class="row 50%">
-						<div class="6u"><input type="text" class="text" name="name" placeholder="Name" /></div>
-						<div class="6u"><input type="text" class="text" name="email" placeholder="Email" /></div>
-					</div>
-					<div class="row 50%">
-						<div class="12u">
-							<textarea name="message" placeholder="Message"></textarea>
-						</div>
-					</div>
-					<div class="row">
-						<div class="12u">
-							<ul class="actions">
-								<li><input type="submit" value="Send Message" /></li>
-							</ul>
-						</div>
-					</div>
-				</form>
-			</article> -->
-
-		<!-- Generic -->
-		<!--
-			<article class="container box style3">
-				<header>
-					<h2>Generic Box</h2>
-					<p>Just a generic box. Nothing to see here.</p>
-				</header>
-				<section>
-					<header>
-						<h3>Paragraph</h3>
-						<p>This is a subtitle</p>
-					</header>
-					<p>Phasellus nisl nisl, varius id <sup>porttitor sed pellentesque</sup> ac orci. Pellentesque
-					habitant <strong>strong</strong> tristique <b>bold</b> et netus <i>italic</i> malesuada <em>emphasized</em> ac turpis egestas. Morbi
-					leo suscipit ut. Praesent <sub>id turpis vitae</sub> turpis pretium ultricies. Vestibulum sit
-					amet risus elit.</p>
-				</section>
-				<section>
-					<header>
-						<h3>Blockquote</h3>
-					</header>
-					<blockquote>Fringilla nisl. Donec accumsan interdum nisi, quis tincidunt felis sagittis eget.
-					tempus euismod. Vestibulum ante ipsum primis in faucibus.</blockquote>
-				</section>
-				<section>
-					<header>
-						<h3>Divider</h3>
-					</header>
-					<p>Donec consectetur <a href="#">vestibulum dolor et pulvinar</a>. Etiam vel felis enim, at viverra
-					ligula. Ut porttitor sagittis lorem, quis eleifend nisi ornare vel. Praesent nec orci
-					facilisis leo magna. Cras sit amet urna eros, id egestas urna. Quisque aliquam
-					tempus euismod. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices
-					posuere cubilia.</p>
-					<hr />
-					<p>Donec consectetur vestibulum dolor et pulvinar. Etiam vel felis enim, at viverra
-					ligula. Ut porttitor sagittis lorem, quis eleifend nisi ornare vel. Praesent nec orci
-					facilisis leo magna. Cras sit amet urna eros, id egestas urna. Quisque aliquam
-					tempus euismod. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices
-					posuere cubilia.</p>
-				</section>
-				<section>
-					<header>
-						<h3>Unordered List</h3>
-					</header>
-					<ul class="default">
-						<li>Donec consectetur vestibulum dolor et pulvinar. Etiam vel felis enim, at viverra ligula. Ut porttitor sagittis lorem, quis eleifend nisi ornare vel.</li>
-						<li>Donec consectetur vestibulum dolor et pulvinar. Etiam vel felis enim, at viverra ligula. Ut porttitor sagittis lorem, quis eleifend nisi ornare vel.</li>
-						<li>Donec consectetur vestibulum dolor et pulvinar. Etiam vel felis enim, at viverra ligula. Ut porttitor sagittis lorem, quis eleifend nisi ornare vel.</li>
-						<li>Donec consectetur vestibulum dolor et pulvinar. Etiam vel felis enim, at viverra ligula. Ut porttitor sagittis lorem, quis eleifend nisi ornare vel.</li>
-					</ul>
-				</section>
-				<section>
-					<header>
-						<h3>Ordered List</h3>
-					</header>
-					<ol class="default">
-						<li>Donec consectetur vestibulum dolor et pulvinar. Etiam vel felis enim, at viverra ligula. Ut porttitor sagittis lorem, quis eleifend nisi ornare vel.</li>
-						<li>Donec consectetur vestibulum dolor et pulvinar. Etiam vel felis enim, at viverra ligula. Ut porttitor sagittis lorem, quis eleifend nisi ornare vel.</li>
-						<li>Donec consectetur vestibulum dolor et pulvinar. Etiam vel felis enim, at viverra ligula. Ut porttitor sagittis lorem, quis eleifend nisi ornare vel.</li>
-						<li>Donec consectetur vestibulum dolor et pulvinar. Etiam vel felis enim, at viverra ligula. Ut porttitor sagittis lorem, quis eleifend nisi ornare vel.</li>
-					</ol>
-				</section>
-				<section>
-					<header>
-						<h3>Table</h3>
-					</header>
-					<div class="table-wrapper">
-						<table class="default">
-							<thead>
-								<tr>
-									<th>ID</th>
-									<th>Name</th>
-									<th>Description</th>
-									<th>Price</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>45815</td>
-									<td>Something</td>
-									<td>Ut porttitor sagittis lorem quis nisi ornare.</td>
-									<td>29.99</td>
-								</tr>
-								<tr>
-									<td>24524</td>
-									<td>Nothing</td>
-									<td>Ut porttitor sagittis lorem quis nisi ornare.</td>
-									<td>19.99</td>
-								</tr>
-								<tr>
-									<td>45815</td>
-									<td>Something</td>
-									<td>Ut porttitor sagittis lorem quis nisi ornare.</td>
-									<td>29.99</td>
-								</tr>
-								<tr>
-									<td>24524</td>
-									<td>Nothing</td>
-									<td>Ut porttitor sagittis lorem quis nisi ornare.</td>
-									<td>19.99</td>
-								</tr>
-							</tbody>
-							<tfoot>
-								<tr>
-									<td colspan="3"></td>
-									<td>100.00</td>
-								</tr>
-							</tfoot>
-						</table>
-					</div>
-				</section>
-				<section>
-					<header>
-						<h3>Form</h3>
-					</header>
-					<form method="post" action="#">
-						<div class="row">
-							<div class="6u">
-								<input class="text" type="text" name="name" id="name" value="" placeholder="John Doe" />
-							</div>
-							<div class="6u">
-								<input class="text" type="text" name="email" id="email" value="" placeholder="johndoe@domain.tld" />
-							</div>
-						</div>
-						<div class="row">
-							<div class="12u">
-								<select name="department" id="department">
-									<option value="">Choose a department</option>
-									<option value="1">Manufacturing</option>
-									<option value="2">Administration</option>
-									<option value="3">Support</option>
-								</select>
-							</div>
-						</div>
-						<div class="row">
-							<div class="12u">
-								<input class="text" type="text" name="subject" id="subject" value="" placeholder="Enter your subject" />
-							</div>
-						</div>
-						<div class="row">
-							<div class="12u">
-								<textarea name="message" id="message" placeholder="Enter your message"></textarea>
-							</div>
-						</div>
-						<div class="row">
-							<div class="12u">
-								<ul class="actions">
-									<li><input type="submit" value="Submit" /></li>
-									<li><input type="reset" class="style3" value="Clear Form" /></li>
-								</ul>
-							</div>
-						</div>
-					</form>
-				</section>
-			</article>
-		-->
-
 		<section id="footer">
 			<ul class="icons">
 				<li><a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
@@ -319,6 +134,71 @@
 	
 		<script>
 			var sequenceCount = 3;
+			
+			$(document).ready(function(){
+			
+				$.ajax({	
+					url:"{% url 'dnaedit:getLabs' %}",
+					type: "GET",
+					data: {},
+					success: function(data){
+					
+							//var jsonParse = JSON.parse(data);
+							console.log(data);
+							labNameSetup(data.labs);
+							
+						},		
+				});	
+			});
+
+			function labNameSetup(labs){
+				var labSelect;
+				var labId;
+				labSelect = "<select id='lab' name='lab_id' onchange='sendLab(this.value)'>";
+				labSelect += "<option selected='selected'>Please Select a lab</option>";
+				for(labId in labs){
+					labSelect += "<option value='"+labId+"'>"+ labs[labId] +"</option>";
+				}
+				
+				labSelect += "</select>";
+				var banner = getElementById('bannerHeader');
+				banner.appendChild(labSelect);
+				<!-- $('#labSelection').html(labSelect); -->
+			}
+			
+			function getLabs(url){
+				$.ajax({
+					url: url,
+					type: "GET",
+					data: {},
+					success: function(data){
+					
+							console.log(data);
+							return data.labs;
+							
+						},
+					
+				});
+			}
+			
+			function getTopologyPath(){
+			
+			}
+			
+			function align(){
+				var sequences = [];
+				var arrayIndex = 0;
+				for(i = sequenceCount*2; i > 0; i= i-2){
+					var div = document.getElementById('speciesDiv');
+					var childLength = document.getElementById('speciesDiv').children.length - 1;
+					var tempSequence = div.children[i].innerHTML;
+					sequences[arrayIndex] = tempSequence;
+					arrayIndex++;
+				}
+				
+				var alignedSequences = JSON.stringify(sequences);
+				AlignedSequences('name', alignedSequences);
+			}
 			
 			function toggleSelect(currentSequence){
 				var selectedSequence = currentSequence;
@@ -360,30 +240,6 @@
 				}
 			}
 			
-			
-			<!-- function getCharacterOffsetWithin(range, node) {
-				<!-- var treeWalker = document.createTreeWalker(
-					<!-- node,
-					/*NodeFilter.SHOW_TEXT,
-					function(node) {
-						var nodeRange = document.createRange();
-						nodeRange.selectNodeContents(node);
-						return nodeRange.compareBoundaryPoints(Range.END_TO_END, range) < 1 ?
-							NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
-					},
-					false -->
-				); -->
-
-				var charCount = 0;
-				while (treeWalker.nextNode()) {
-					charCount += treeWalker.currentNode.length;
-				}
-				if (range.startContainer.nodeType == 3) {
-					charCount += range.startOffset;
-				}
-				return charCount;
-			} -->*/
-
 			document.body.addEventListener("mouseup", function() {
 				if (document.getSelection().anchorNode.parentNode.className == "textbox"){
 					var el = document.getElementsByClassName("textbox");
