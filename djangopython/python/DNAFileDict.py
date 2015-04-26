@@ -96,6 +96,7 @@ class DNAFileDict(object):
     def populateDict(self):
             objectNameList = []
             objectNucleotideList = []
+            objectNucleotide =""
             
             try:
                 fileOpen = open(self.pathName)
@@ -104,13 +105,19 @@ class DNAFileDict(object):
             
             for line in fileOpen:
                 if line[0] == ">":
+                    if objectNucleotide:
+                        objectNucleotideList.append(objectNucleotide)
+                        objectNucleotide = ""
                     line = line.rstrip("\n")
                     line = line.rstrip(" ")
                     line = line.lstrip(">")
                     objectNameList.append(line)
                 else:
                     line = line.rstrip('\n, " ')
-                    objectNucleotideList.append(line)
+                    objectNucleotide += line
+            if objectNucleotide:
+                        objectNucleotideList.append(objectNucleotide)
+
             self.setObjectDictionary(objectNameList, objectNucleotideList)
         
     '''

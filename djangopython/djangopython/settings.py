@@ -29,6 +29,9 @@ ALLOWED_HOSTS = []
 #Place where templates are to be stored.
 TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates')]
 
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, "static"),
+)
 # Application definition
 
 INSTALLED_APPS = (

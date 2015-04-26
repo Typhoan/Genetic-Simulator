@@ -8,101 +8,22 @@
 
 <div id='labSelection'> </div>
 <br />
-<form action="{% url 'dnaedit:ajaxFiles' %}" method="POST" id="fileSend">{% csrf_token %}
+<form action="{% url 'dnaedit:ajaxFiles' %}" method="POST" id="fileSend">
 </form>
 
-<!--
-<form action='{% url 'dnaedit:ajaxFiles' %}' method="POST" enctype='multipart/form-data'> {% csrf_token %}
-<select name = 'file_id'>
-{% if files %}
-	{% for file in files %}
-		<option value="{{file.id}}">{{ file.file_name }}</option>
-	{% endfor %}
-	
-	</ul>
-	
-{% else %}
-	<option selected="selected">Nothing to select</option>
-{% endif %}
-</select>
-<button type="submit">Submit</button>
-</form>
--->
 {% endblock %}
 
 {% block js %}
 <script>
 
-function labNameSetup(labs){
-	
-	var labSelect;
-	var labId;
-	labSelect = "<select id='lab' name='lab_id' onchange='sendLab(this.value)'>";
-	labSelect += "<option selected='selected'>Please Select a lab</option>";
-	for(labId in labs){
-		labSelect += "<option value='"+labId+"'>"+ labs[labId] +"</option>";
-	}
-	
-	labSelect += "</select>";
-	
-	$('#labSelection').html(labSelect);
-	
-}
-function fileNameSetup(files){
-	
-	var fileSelect;
-	var fileId;
-	fileSelect = "{% csrf_token %}<select id='file' name='file_id'>";
-	fileSelect += "<option selected='selected'>Please Select a lab</option>";
-	for(fileId in files){
-		fileSelect += "<option value='"+fileId+"'>"+ files[fileId] +"</option>";
-	}
-	
-	fileSelect += "</select>";
-	fileSelect += "<br/><input type='submit'/>";
-	
-	$('#fileSend').html(fileSelect);
-	
-}
-
-
 function sendLab(value){
-	
-		$.ajax({
-			
-				url:"{% url 'dnaedit:getFiles' %}",
-				type: "GET",
-				data: {'lab_id': value},
-				success: function(data){
-				
-						//var jsonParse = JSON.parse(data);
-						console.log(data);
-						
-						fileNameSetup(data.files)
-					},
-				
-			});
+	getFiles("{% url 'dnaedit:getFiles' %}",value)
 	
 }
 $(document).ready(function(){
 			
-			$.ajax({
+	getLabs("{% url 'dnaedit:getLabs' %}");
 			
-				url:"{% url 'dnaedit:getLabs' %}",
-				type: "GET",
-				data: {},
-				success: function(data){
-				
-						//var jsonParse = JSON.parse(data);
-						console.log(data);
-						labNameSetup(data.labs);
-						
-					},
-				
-			});
-			
-	
-	
 
 });
 	

@@ -66,7 +66,7 @@ class TreeBuilder:
 		matrix = graph.dMatrix
 		stringMatrix = ""
 		for i in range(len(self.alignedSequences)):
-			stringMatrix += "{}:\t\t[ ".format(self.names(i))
+			stringMatrix += "{}:\t\t[ ".format(self.names[i])
 			for j in range(len(self.alignedSequences)):
 				if j == len(self.alignedSequences)-1:
 					stringMatrix += "{} ".format(matrix[i][j])

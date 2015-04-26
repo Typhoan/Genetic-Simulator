@@ -1,58 +1,92 @@
 {% extends 'dnaedit/base.html' %}
 
-{% block pagetitle %}Starting Page{% endblock %}
+{% block pagetitle %}Demo Page{% endblock %}
 
 {% block content %}
 
-<p>The species from the file.</p>
 
 {% if dna_sequences %}
-<form id="sequencesForm"> {% csrf_token %} 
+<form id="sequencesForm">
 
 	{% for strand in dna_sequences %}
-		<input type='text' size='15' name='speciesName{{ forloop.counter }}' id='speciesName{{ forloop.counter }}' value='Species {{ forloop.counter }}'/> <input type='text' size='200'  name='species{{ forloop.counter }}' id="speciesValue{{ forloop.counter }}" value='{{ strand.dna_string }}'/><br />
-		
+		<input type='text' size='15' name='{{ forloop.counter }}' id='speciesName{{ forloop.counter }}' onblur='generateLists()' value='{{ strand }}'/>
+		 <input type='text' size='100' oninput='isValid(this.value, this.name);' onblur='this.value=this.value.toUpperCase();'  name='species{{ forloop.counter }}' id="speciesValue{{ forloop.counter }}" value='{{ strand.dna_string }}'/> 
+		<button id='speciesButton{{ forloop.counter }}' type='button' onclick='deleteSequence({{ forloop.counter }})'>Delete</button>
+		<span id='species{{ forloop.counter }}'></span><br id='gone{{ forloop.counter }}' />
 		{% if forloop.last %}
-			<input type="hidden" name="count" id="count" value="{{ forloop.counter }}" />
+			<input type="hidden" name="counter" id="counter" value="{{ forloop.counter }}" />
 		{% endif %}
 	
 	{% endfor %}
-	
-	<button type="button" id="sequenceSubmit">Submit</button>
 </form>
-<button id="testSubmit">Test Ajax</button>
+<button type="button" onclick="addNewSequence()">Add Sequence</button><br/><br />
+<div id="waveformError"></div>
+<div id="waveformSelectDiv"></div>
 <button id="waveformDisplay">Show Waveform</button><br/><br/>
 
 <button id="displayRNA">RNA Sequences</button>
+<button id="displayInverse">Inverse DNA Sequences</button>
 <button id="displayProtein">Protein Sequences</button>
 <button id="displayDotMatrix">Dot Matrix</button>
+<button id="displayDistanceMatrix">Distance Matrix</button>
 <button id="displayTree">Topological Tree</button>
+<button id="displayBlaze">BLAZE</button>
 
-{% else %}
-not working
 {% endif %}
 
 <div id="responsePost"></div>
 
+<div id="inverseSequences" hidden="hidden">
+<h3>Inverse DNA Sequences</h3>
+<button id="inverseGen">Generate Inverse Sequences</button><br />
+<div id="inverseDisplay"><p>Result Not Found</p></div>
+
+</div>
+
 <div id="rnaSequences" hidden="hidden">
 <h3>RNA Sequences</h3>
-<p>Result Not Found</p>
+<button id="rnaGen">Generate RNA Sequences</button><br />
+<div id="rnaDisplay"><p>Result Not Found</p></div>
+
 </div>
 
 
 <div id="proteinSequences" hidden="hidden">
 <h3>Protein Sequences</h3>
-<p>Result Not Found</p>
+<button id="proteinGen">Generate Protein Sequences</button><br />
+<div id="proteinDisplay"><p>Result Not Found</p></div>
+
 </div>
 
 <div id="dotMatrix" hidden="hidden">
 <h3>Dot Matrix</h3>
-<p>Result Not Found</p>
+<p>Select a dominant sequence for a dot matrix.</p>
+<div id="dotSelectDiv"></div><br />
+<button id="dotMatrixGen">Generate Dot Matrix</button><br />
+<div id="dotDisplay"></div>
 </div>
 
 <div id="topTree" hidden="hidden">
 <h3>Topological Tree</h3>
-<p>Result Not Found</p>
+<button id="treeGen">Generate Tree Image</button> 
+<button id="treeStringGen">Generate Tree String</button><br />
+
+<div id="treeDisplay"><p>Result Not Found</p></div>
+</div>
+
+<div id="distanceMatrix" hidden="hidden">
+<h3>Distance Matrix</h3>
+<button id="distanceGen">Generate Distance Matrix</button><br />
+
+<div id="distanceDisplay"><p>Result Not Found</p></div>
+</div>
+
+<div id="blaze" hidden="hidden">
+<h3>Blaze Report</h3>
+<p>Select a sequence for a blast report</p>
+<div id="blazeSelectDiv"></div><br />
+<button id="sendBlaze">Generate Report</button><br />
+<div id="blazeDisplay"></div>
 </div>
 
 {% endblock %}
@@ -60,313 +94,181 @@ not working
 {% block js %}
 
 <script>
-function setRNA(rnaStuff, keys){
-	console.log(rnaStuff);
-	var key;
-	var replacement="";
-	var i;
-	for(i=0; i<keys.length; i++){
-	console.log(keys[i]);
-		replacement += "<p>"+rnaStuff[keys[i]]+"</p>";
-	}
-	
-	$("#rnaSequences").html(replacement);
-	
-}
-function setProtein(proteinStuff, keys){
-	var key;
-	var replacement="";
-	var i;
-	for(i=0; i<keys.length; i++){
-		replacement += "<p>"+proteinStuff[keys[i]]+"</p>";
-	}
-	$("#proteinSequences").html(replacement);
-}
-function setDotMatrix(dotStuff, keys){
-	var key;
-	var replacement="";
-	var i;
-	for(i=0; i<keys.length; i++){
-		replacement += "<p><pre style='font-size:16px'>"+dotStuff[keys[i]]+"</pre></p>";
-	}
-	$("#dotMatrix").html(replacement);
-}
-function setTopTree(treeStuff){
-	var replacement="";
-	replacement += "<img src='/"+treeStuff+"'/>";
-	$("#topTree").html(replacement);
-}
 
-function rnaTest(rnaSeq){
-	
-	var rna = getDNAFromRNA("{% url 'dnaedit:rnatodna' %}", rnaSeq);
-
-			$.ajax({
-			
-				url:"{% url 'dnaedit:rnatoprotein' %}",
-				type: "POST",
-				data: {"rna": rnaSeq},
-				success: function(data){
-				
-						//var jsonParse = JSON.parse(data);
-						console.log(data);
-						
-					},
-				
-			});
-}
-
-$("#testSubmit").click(function(){
-		
-			var dataInfo = {"Frog": "ATGTTGGAAACCC", "Pig": "ATTGGTTTAAACCCCCCCAAATTT"};
-			var dataString = JSON.stringify(dataInfo);
-			var dataSend = {"dna": dataString};
-			$.ajax({
-			
-				url:"{% url 'dnaedit:dnatoprotein' %}",
-				type: "POST",
-				data: {"dna": dataString},
-				success: function(data){
-				
-						//var jsonParse = JSON.parse(data);
-						console.log(data);
-						
-					},
-				
-			});
-			
-			$.ajax({
-			
-				url:"{% url 'dnaedit:dnatorna' %}",
-				type: "POST",
-				data: {"dna": dataString},
-				success: function(data){
-				
-						//var jsonParse = JSON.parse(data);
-						console.log(data);
-						rnaTest(JSON.stringify(data.rna));
-					},
-				
-			});
-			$.ajax({
-			
-				url:"{% url 'dnaedit:inverseDna' %}",
-				type: "POST",
-				data: {"dna": dataString},
-				success: function(data){
-				
-						//var jsonParse = JSON.parse(data);
-						console.log(data);
-						
-					},
-				
-			});
-			$.ajax({
-			
-				url:"{% url 'dnaedit:dotMatrix' %}",
-				type: "POST",
-				data: {"sequences": dataString, "dominant_species":"Frog"},
-				success: function(data){
-				
-						//var jsonParse = JSON.parse(data);
-						console.log(data);
-						
-					},
-				
-			});
-			$.ajax({
-			
-				url:"{% url 'dnaedit:topologyFile' %}",
-				type: "POST",
-				data: {"unaligned_sequences": dataString},
-				success: function(data){
-				
-						//var jsonParse = JSON.parse(data);
-						console.log(data);
-						
-					},
-				
-			});
-			$.ajax({
-			
-				url:"{% url 'dnaedit:align' %}",
-				type: "POST",
-				data: {"dna": dataString},
-				success: function(data){
-				
-						//var jsonParse = JSON.parse(data);
-						console.log(data);
-						
-					},
-				
-			});
-			$.ajax({
-			
-				url:"{% url 'dnaedit:blaze' %}",
-				type: "POST",
-				data: {"sequence": $("#speciesValue1").val()},
-				success: function(data){
-				
-						//var jsonParse = JSON.parse(data);
-						console.log(data);
-						
-					},
-				
-			});
-
-	});
-
-
-$("#sequenceSubmit").click(function(){
-		//$.post(
-			//"{% url 'dnaedit:dnaInfo' %}", $("#sequencesForm").serialize(),
-			//function(data){
-				//$("#responsePost").html("<p>It Worked Finally!!!!</p>");
-				
-			//}, json);
-			var dataInfo = [];
-			var count = $("#count").val();
-			for(i=1; i<=count; i++){
-				dataInfo.push({name:"", value:""});
-			}
-			$.ajax({
-			
-				url:"{% url 'dnaedit:dnaInfo' %}",
-				type: "POST",
-				data: $("#sequencesForm").serializeArray(),
-				success: function(data){
-				
-						//var jsonParse = JSON.parse(data);
-						console.log(data);
-						var keys = data.keys;
-						setRNA(data.rnaSequences, keys);
-						setProtein(data.proteinSequences, keys);
-						setDotMatrix(data.dotMatrix, keys);
-						setTopTree(data.tree);
-						$("#dotMatrix").show();
-						
-					},
-				
-			});
-
-	});
-	
 	$(document).ready(function(){
+	
+		generateLists();
+		startValidity();
 		$("#displayRNA").click(function(){
 			$("#rnaSequences").show();
 			$("#proteinSequences").hide();
 			$("#dotMatrix").hide();
 			$("#topTree").hide();
+			$("#blaze").hide();
+			$("#distanceMatrix").hide();
+			$("#inverseSequences").hide();
 		});
 		$("#displayProtein").click(function(){
 			$("#proteinSequences").show();
 			$("#rnaSequences").hide();
 			$("#dotMatrix").hide();
 			$("#topTree").hide();
+			$("#blaze").hide();
+			$("#distanceMatrix").hide();
+			$("#inverseSequences").hide();
 		});
 		$("#displayDotMatrix").click(function(){
 			$("#dotMatrix").show();
 			$("#rnaSequences").hide();
 			$("#proteinSequences").hide();
 			$("#topTree").hide();
+			$("#blaze").hide();
+			$("#distanceMatrix").hide();
+			$("#inverseSequences").hide();
 		});
 		$("#displayTree").click(function(){
 			$("#topTree").show();
 			$("#rnaSequences").hide();
 			$("#proteinSequences").hide();
 			$("#dotMatrix").hide();
+			$("#blaze").hide();
+			$("#distanceMatrix").hide();
+			$("#inverseSequences").hide();
+		});
+		$("#displayBlaze").click(function(){
+			$("#topTree").hide();
+			$("#rnaSequences").hide();
+			$("#proteinSequences").hide();
+			$("#dotMatrix").hide();
+			$("#blaze").show();
+			$("#distanceMatrix").hide();
+			$("#inverseSequences").hide();
+		});
+		$("#displayDistanceMatrix").click(function(){
+			$("#topTree").hide();
+			$("#rnaSequences").hide();
+			$("#proteinSequences").hide();
+			$("#dotMatrix").hide();
+			$("#blaze").hide();
+			$("#distanceMatrix").show();
+			$("#inverseSequences").hide();
+		});
+		$("#displayInverse").click(function(){
+			$("#topTree").hide();
+			$("#rnaSequences").hide();
+			$("#proteinSequences").hide();
+			$("#dotMatrix").hide();
+			$("#blaze").hide();
+			$("#distanceMatrix").hide();
+			$("#inverseSequences").show();
+		});
+		
+		$("#sendBlaze").click(function(){
+		
+			if(checkOneIsValid($("#blazeSelect").val())){
+				var seq = $("#speciesValue"+$("#blazeSelect").val()).val();
+				
+				getBlazeReport("{% url 'dnaedit:blaze' %}", seq);
+			}
+			else{
+				$("#blazeDisplay").html("<p>You chose an Invalid Sequence.</p>");
+			}
+			
+		});
+		
+		$("#dotMatrixGen").click(function(){
+		
+			if(checkAllValid()){
+				var seqName = $("#speciesName"+$("#dotSelect").val()).val().trim();
+				var dataInfo = generateSequenceDict();
+				var dataString = JSON.stringify(dataInfo);
+				getDotMatrix("{% url 'dnaedit:dotMatrix' %}", dataString, seqName);
+			}
+			else{
+				$("#blazeDisplay").html("<p>There is at least one invalid sequence.</p>");
+			}
+		});
+		
+		$("#rnaGen").click(function(){
+			if(checkAllValid()){
+				var dataInfo = generateSequenceDict();
+				var dataString = JSON.stringify(dataInfo);
+				getRNAFromDNA("{% url 'dnaedit:dnatorna' %}", dataString);
+			}
+			else{
+				$("#rnaDisplay").html("<p>There is at least one invalid sequence.</p>");
+			}
+		});
+		
+		$("#inverseGen").click(function(){
+			if(checkAllValid()){	
+				var dataInfo = generateSequenceDict();
+				var dataString = JSON.stringify(dataInfo);
+				getInverseDNA("{% url 'dnaedit:inverseDna' %}", dataString);
+			}
+			else{
+				$("#inverseDisplay").html("<p>There is at least one invalid sequence.</p>");
+			}
+		});
+		
+		$("#proteinGen").click(function(){
+			if(checkAllValid()){
+				var dataInfo = generateSequenceDict();
+				var dataString = JSON.stringify(dataInfo);
+				getProteinFromDNA("{% url 'dnaedit:dnatoprotein' %}", dataString);
+			}
+			else{
+				$("#proteinDisplay").html("<p>There is at least one invalid sequence.</p>");
+			}
+		});
+		
+		$("#distanceGen").click(function(){
+			if(checkAllValid()){
+				var dataInfo = generateSequenceDict();
+				var dataString = JSON.stringify(dataInfo);
+				getDistanceMatrixString("{% url 'dnaedit:distanceMatrixString' %}", dataString);
+			}
+			else{
+				$("#distanceDisplay").html("<p>There is at least one invalid sequence.</p>");
+			}
+		});
+		
+		$("#treeGen").click(function(){
+			if(checkAllValid()){
+				var dataInfo = generateSequenceDict();
+				var dataString = JSON.stringify(dataInfo);
+				getTopologyFilePath("{% url 'dnaedit:topologyFile' %}", dataString);
+			}
+			else{
+				$("#treeDisplay").html("<p>There is at least one invalid sequence.</p>");
+			}
+		});
+		
+		$("#treeStringGen").click(function(){
+			if(checkAllValid()){
+				var dataInfo = generateSequenceDict();
+				var dataString = JSON.stringify(dataInfo);
+				getTopologyTreeString("{% url 'dnaedit:topologyString' %}", dataString);
+			}
+			else{
+				$("#treeDisplay").html("<p>There is at least one invalid sequence.</p>");
+			}
 		});
 	
 	});
 	
+	$("#waveformDisplay").click(function(){
+		if(checkOneIsValid($("#waveformSelect").val())){	
+			$("#waveformError").html("");
+			var seqName = $("#speciesValue"+$("#waveformSelect").val()).val().trim(); 
+			drawGraphInPopup(seqName);
+		}
+		else{
+			$("#waveformError").html("<p>You chose an Invalid Sequence.</p>");
+		}
+	});
+	
 </script>
-
-<script type="text/javascript">
-        function generateWaveform(sequence) {
-            "use strict";
-            var list = [],
-            i;
-            console.log("Working");
-            for (i = 0; i < sequence.length; i += 1) {
-                if (sequence.charAt(i) === "A") {
-                    list[list.length] = [(7 * i), 0.2, Math.random() / 10, Math.random() / 10, Math.random() / 10];
-                    //list[list.length] = [(7 * i) + 1, 0.45, Math.random() / 10, Math.random() / 10, Math.random() / 10];
-                    list[list.length] = [(7 * i) + 2, 0.7, Math.random() / 10, Math.random() / 10, Math.random() / 10];
-                    list[list.length] = [(7 * i) + 3, 1 + ((Math.random() - 0.5) / 4), Math.random() / 10, Math.random() / 10, Math.random() / 10];
-                    list[list.length] = [(7 * i) + 4, 0.7, Math.random() / 10, Math.random() / 10, Math.random() / 10];
-                    //list[list.length] = [(7 * i) + 5, 0.45, Math.random() / 10, Math.random() / 10, Math.random() / 10];
-                    list[list.length] = [(7 * i) + 6, 0.2, Math.random() / 10, Math.random() / 10, Math.random() / 10];
-                } else if (sequence.charAt(i) === "T") {
-                    list[list.length] = [(7 * i), Math.random() / 10, 0.2, Math.random() / 10, Math.random() / 10];
-                    //list[list.length] = [(7 * i) + 1, Math.random() / 10, 0.45, Math.random() / 10, Math.random() / 10];
-                    list[list.length] = [(7 * i) + 2, Math.random() / 10, 0.7, Math.random() / 10, Math.random() / 10];
-                    list[list.length] = [(7 * i) + 3, Math.random() / 10, 1 + ((Math.random() - 0.5) / 4), Math.random() / 10, Math.random() / 10];
-                    list[list.length] = [(7 * i) + 4, Math.random() / 10, 0.7, Math.random() / 10, Math.random() / 10];
-                    //list[list.length] = [(7 * i) + 5, Math.random() / 10, 0.45, Math.random() / 10, Math.random() / 10];
-                    list[list.length] = [(7 * i) + 6, Math.random() / 10, 0.2, Math.random() / 10, Math.random() / 10];
-                } else if (sequence.charAt(i) === "G") {
-                    list[list.length] = [(7 * i), Math.random() / 10, Math.random() / 10, 0.2, Math.random() / 10];
-                    //list[list.length] = [(7 * i) + 1, Math.random() / 10, Math.random() / 10, 0.45, Math.random() / 10];
-                    list[list.length] = [(7 * i) + 2, Math.random() / 10, Math.random() / 10, 0.7, Math.random() / 10];
-                    list[list.length] = [(7 * i) + 3, Math.random() / 10, Math.random() / 10, 1 + ((Math.random() - 0.5) / 4), Math.random() / 10];
-                    list[list.length] = [(7 * i) + 4, Math.random() / 10, Math.random() / 10, 0.7, Math.random() / 10];
-                    //list[list.length] = [(7 * i) + 5, Math.random() / 10, Math.random() / 10, 0.45, Math.random() / 10];
-                    list[list.length] = [(7 * i) + 6, Math.random() / 10, Math.random() / 10, 0.2, Math.random() / 10];
-                } else if (sequence.charAt(i) === "C") {
-                    list[list.length] = [(7 * i), Math.random() / 10, Math.random() / 10, Math.random() / 10, 0.2];
-                    //list[list.length] = [(7 * i) + 1, Math.random() / 10, Math.random() / 10, Math.random() / 10, 0.45];
-                    list[list.length] = [(7 * i) + 2, Math.random() / 10, Math.random() / 10, Math.random() / 10, 0.7];
-                    list[list.length] = [(7 * i) + 3, Math.random() / 10, Math.random() / 10, Math.random() / 10, 1 + ((Math.random() - 0.5) / 4)];
-                    list[list.length] = [(7 * i) + 4, Math.random() / 10, Math.random() / 10, Math.random() / 10, 0.7];
-                    //list[list.length] = [(7 * i) + 5, Math.random() / 10, Math.random() / 10, Math.random() / 10, 0.45];
-                    list[list.length] = [(7 * i) + 6, Math.random() / 10, Math.random() / 10, Math.random() / 10, 0.2];
-                } else {
-                    //list[list.length] = [i, Math.random() / 10, Math.random() / 10, Math.random() / 10, Math.random() / 10];
-                    //list[list.length] = [i, Math.random() / 10, Math.random() / 10, Math.random() / 10, Math.random() / 10];
-                    list[list.length] = [i, Math.random() / 10, Math.random() / 10, Math.random() / 10, Math.random() / 10];
-                    list[list.length] = [i, Math.random() / 10, Math.random() / 10, Math.random() / 10, Math.random() / 10];
-                    list[list.length] = [i, Math.random() / 10, Math.random() / 10, Math.random() / 10, Math.random() / 10];
-                    list[list.length] = [i, Math.random() / 10, Math.random() / 10, Math.random() / 10, Math.random() / 10];
-                    list[list.length] = [i, Math.random() / 10, Math.random() / 10, Math.random() / 10, Math.random() / 10];
-                }
-            }
-            return list;
-        }
-        function drawGraph(seq, containingDiv) {
-            return new Dygraph(
-                containingDiv,
-                generateWaveform(seq),
-                {
-                  labels: ['x', 'A', 'T', 'G', 'C'],
-                  connectSeparatedPoints: true,
-                  drawPoints: false,
-                  drawGrid: false,
-                  width: seq.length > 1000 ? 30000 : 30*seq.length + 20,
-                  height: 150
-                }
-            ); 
-        }
-        //when actually put on server, change the hard-coded url in window.open and 
-        //the element name in argument to drawGraph
-        function drawGraphInPopup(seq) {
-            var graphWindow = window.open("{{ STATIC_URL }}popUp/GraphPopUp.html", "_blank", "centerscreen, resizable, dialog, scrollbars, top=0, left=0, width=100, height=100");
-            graphWindow.resizeTo(seq.length*30 + 120 > 2*screen.availWidth/3 ? 2*screen.availWidth/3 : seq.length*30 + 120, 275);
-            // 'graph' is the name of the div in GraphPopUp.html that should contain the graph
-            graphWindow.onload = function() { drawGraph(seq, graphWindow.document.getElementById('graph')); };
-        }
-        
-       
-        //drawGraphInPopup(dnaseq);
-        $("#waveformDisplay").click(function(){
-       	 	console.log("WaveformClick");
-       	 	var dnaSeq = String($("#speciesValue1").val()); 
-       	 	console.log(dnaSeq);
-       	 	//var dnaSeq = "AAACACAATAGCTAAGGCCCAAACTGGGATTAGATACCCCACTATGCTTAGCCCTAAACTTTAACAGTTAAATCACAAAACTGCTCGCCAGAACACTACGAGCCACAGCTTAAAACTCAAAGGACCTGGCGGTGCTTCATATCCCTCTAGAGGAGCCTGTTCTGTAATCGATAAACCCCGATCAACCTCACCACCCCTTGCTCAGCCTATATACCGCCATCTTCAGCAAACCCTGATGAAGGC";
-			drawGraphInPopup(dnaSeq);
-			console.log("WaveformEnd");	
-		});
-</script>
-
 
 {% endblock %}
 

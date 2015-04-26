@@ -9,9 +9,10 @@ import python.QueryChecks as Checks
 import python.BlastHandler as BLAZE
 from django.http.response import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from djangopython.settings import MEDIA_ROOT
+from djangopython.settings import MEDIA_ROOT, STATIC_URL
 import time
 import json as j
+import os
 # Create your views here.
 
 
@@ -26,56 +27,15 @@ def uploadFile(request):
     
     return HttpResponse(template.render(context))
 
+def index(request):
+    template = loader.get_template('dnaedit/index.html')
+    context = RequestContext(request)
+    
+    return HttpResponse(template.render(context))
+
 
 #AJAX TEST FUNCTIONS
-
 @csrf_exempt
-def getDNAInformation(request):
-    spes = []
-    regSpes = []
-    key = []
-    if request.method == 'POST':
-        postCount = request.POST.get('count')
-        
-        for value in range(int(postCount)):
-            spes.append(request.POST.get('species'+str(value+1)))
-            regSpes.append(request.POST.get('species'+str(value+1)))
-            key.append('species'+str(value+1))
-    
-    if spes:
-        align = Aligner.SequenceAligner()
-        aligningSpes = spes
-        alignedList = align.alignSequences(aligningSpes[0], aligningSpes[1:])
-        
-        #treeFile = TB.TreeBuilder()
-        #tree = treeFile.createTree(alignedList)
-        
-        dotMatrix = align.generateDotMatrix(alignedList)
-        
-        dotMatrixSend = {}
-        for i in range(int(postCount)):
-            dotMatrixSend[key[i]] = dotMatrix[i]
-            
-        rna = {}
-        keyIterator = 0
-        for strand in regSpes:
-            rna[key[keyIterator]]=ST.DNAToRNA(strand)
-            keyIterator += 1
-            
-        protein = {}
-
-        for k in range(int(postCount)):
-            protein[key[k]] = ST.RNAToProtein(rna[key[k]])
-        #x,y = alignSequences(dna[0], dna)
-        #align_output = createTree(spes)
-        
-        time.sleep(10)
-        
-    responseDict = {'keys':key ,'rnaSequences': rna, 'proteinSequences':protein, 'dotMatrix':dotMatrixSend}
-    response = JsonResponse(responseDict)
-    
-    return response
-
 def fileSelectionAjax(request):
     if request.method == 'POST':
         file_id = request.POST.get('file_id')
@@ -92,9 +52,7 @@ def fileSelectionAjax(request):
 def ajaxShowFiles(request):
     template = loader.get_template('dnaedit/ajaxShowFiles.html')
     
-    files = LabFile.objects.all()
-    
-    context = RequestContext(request, {'files': files})
+    context = RequestContext(request)
     return HttpResponse(template.render(context))
 
 
@@ -153,6 +111,13 @@ def sendFiles(request):
     
     return response
 
+'''
+    Send the sequences for a specific file in a dictionary with the species name
+    being the key and the sequence being the value.
+    
+    Takes in a file_id to associate the specific file.
+'''
+@csrf_exempt
 def sendFileSequences(request):
     if request.method == 'POST':
         file_id = request.POST.get('file_id')
@@ -461,14 +426,14 @@ def getBlazeReport(request):
     elif request.method == 'GET':
         blazeSeq = request.GET.get('sequence')
     if blazeSeq:
-        
-        blazeObj = BLAZE.BlastHandler(blazeSeq)
-        blazeObj.blastSendNucleotide()
-        blazeObj.blastRecordParse()
-        blazeReport = blazeObj.getBlastString()
+        try:
+            blazeObj = BLAZE.BlastHandler(blazeSeq)
+            blazeObj.blastSendNucleotide()
+            blazeObj.blastRecordParse()
+            blazeReport = blazeObj.getBlastString()
             
-        #except Exception as e:
-        #   return HttpResponse(status=400, reason=str(e))
+        except Exception as e:
+            return HttpResponse(status=400, reason=str(e))
     else:
         return HttpResponse(status=400, reason='No information was given.')
         

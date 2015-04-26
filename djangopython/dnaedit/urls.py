@@ -7,9 +7,8 @@ from dnaedit import views
     Example: url(r'^<name of level>/$, <method associated to the extension for view>, name=<name of url>)
 '''
 urlpatterns = patterns('',
-                       
+    #url(r'^$', views.index, name='index'),              
     url(r'^upload/$', views.uploadFile, name='upload'),
-    url(r'^ajaxTest/$', views.getDNAInformation, name='dnaInfo'),
     url(r'^ajaxDemo/$', views.fileSelectionAjax, name='ajaxFiles'),
     url(r'^ajaxDisplay/$', views.ajaxShowFiles, name='ajaxDisplay'),
     url(r'^get/labs/$', views.sendLabs, name='getLabs'),
@@ -18,6 +17,7 @@ urlpatterns = patterns('',
     url(r'^upload/file/$', views.uploadLabFile, name='uploadLabFile'),
     url(r'^get/align/$',views.getAlignedSequences,name='align'),
     url(r'^get/distancematrix/$',views.getDistanceMatrix,name='distanceMatrix'),
+    url(r'^get/distancematrix/string/$',views.getDistanceMatrixString,name='distanceMatrixString'),
     url(r'^get/rnatodna/$',views.getDNAFromRNA,name='rnatodna'),
     url(r'^get/dotmatrix/$',views.getDotMatrix,name='dotMatrix'),
     url(r'^get/inversedna/$',views.getInverseDNA,name='inverseDna'),
