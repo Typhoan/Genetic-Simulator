@@ -1,0 +1,274 @@
+{% extends 'dnaedit/base.html' %}
+
+{% block pagetitle %}Demo Page{% endblock %}
+
+{% block content %}
+
+
+{% if dna_sequences %}
+<form id="sequencesForm">
+
+	{% for strand in dna_sequences %}
+		<input type='text' size='15' name='{{ forloop.counter }}' id='speciesName{{ forloop.counter }}' onblur='generateLists()' value='{{ strand }}'/>
+		 <input type='text' size='100' oninput='isValid(this.value, this.name);' onblur='this.value=this.value.toUpperCase();'  name='species{{ forloop.counter }}' id="speciesValue{{ forloop.counter }}" value='{{ strand.dna_string }}'/> 
+		<button id='speciesButton{{ forloop.counter }}' type='button' onclick='deleteSequence({{ forloop.counter }})'>Delete</button>
+		<span id='species{{ forloop.counter }}'></span><br id='gone{{ forloop.counter }}' />
+		{% if forloop.last %}
+			<input type="hidden" name="counter" id="counter" value="{{ forloop.counter }}" />
+		{% endif %}
+	
+	{% endfor %}
+</form>
+<button type="button" onclick="addNewSequence()">Add Sequence</button><br/><br />
+<div id="waveformError"></div>
+<div id="waveformSelectDiv"></div>
+<button id="waveformDisplay">Show Waveform</button><br/><br/>
+
+<button id="displayRNA">RNA Sequences</button>
+<button id="displayInverse">Inverse DNA Sequences</button>
+<button id="displayProtein">Protein Sequences</button>
+<button id="displayDotMatrix">Dot Matrix</button>
+<button id="displayDistanceMatrix">Distance Matrix</button>
+<button id="displayTree">Topological Tree</button>
+<button id="displayBlaze">BLAZE</button>
+
+{% endif %}
+
+<div id="responsePost"></div>
+
+<div id="inverseSequences" hidden="hidden">
+<h3>Inverse DNA Sequences</h3>
+<button id="inverseGen">Generate Inverse Sequences</button><br />
+<div id="inverseDisplay"><p>Result Not Found</p></div>
+
+</div>
+
+<div id="rnaSequences" hidden="hidden">
+<h3>RNA Sequences</h3>
+<button id="rnaGen">Generate RNA Sequences</button><br />
+<div id="rnaDisplay"><p>Result Not Found</p></div>
+
+</div>
+
+
+<div id="proteinSequences" hidden="hidden">
+<h3>Protein Sequences</h3>
+<button id="proteinGen">Generate Protein Sequences</button><br />
+<div id="proteinDisplay"><p>Result Not Found</p></div>
+
+</div>
+
+<div id="dotMatrix" hidden="hidden">
+<h3>Dot Matrix</h3>
+<p>Select a dominant sequence for a dot matrix.</p>
+<div id="dotSelectDiv"></div><br />
+<button id="dotMatrixGen">Generate Dot Matrix</button><br />
+<div id="dotDisplay"></div>
+</div>
+
+<div id="topTree" hidden="hidden">
+<h3>Topological Tree</h3>
+<button id="treeGen">Generate Tree Image</button> 
+<button id="treeStringGen">Generate Tree String</button><br />
+
+<div id="treeDisplay"><p>Result Not Found</p></div>
+</div>
+
+<div id="distanceMatrix" hidden="hidden">
+<h3>Distance Matrix</h3>
+<button id="distanceGen">Generate Distance Matrix</button><br />
+
+<div id="distanceDisplay"><p>Result Not Found</p></div>
+</div>
+
+<div id="blaze" hidden="hidden">
+<h3>Blaze Report</h3>
+<p>Select a sequence for a blast report</p>
+<div id="blazeSelectDiv"></div><br />
+<button id="sendBlaze">Generate Report</button><br />
+<div id="blazeDisplay"></div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+
+<script>
+
+	$(document).ready(function(){
+	
+		generateLists();
+		startValidity();
+		$("#displayRNA").click(function(){
+			$("#rnaSequences").show();
+			$("#proteinSequences").hide();
+			$("#dotMatrix").hide();
+			$("#topTree").hide();
+			$("#blaze").hide();
+			$("#distanceMatrix").hide();
+			$("#inverseSequences").hide();
+		});
+		$("#displayProtein").click(function(){
+			$("#proteinSequences").show();
+			$("#rnaSequences").hide();
+			$("#dotMatrix").hide();
+			$("#topTree").hide();
+			$("#blaze").hide();
+			$("#distanceMatrix").hide();
+			$("#inverseSequences").hide();
+		});
+		$("#displayDotMatrix").click(function(){
+			$("#dotMatrix").show();
+			$("#rnaSequences").hide();
+			$("#proteinSequences").hide();
+			$("#topTree").hide();
+			$("#blaze").hide();
+			$("#distanceMatrix").hide();
+			$("#inverseSequences").hide();
+		});
+		$("#displayTree").click(function(){
+			$("#topTree").show();
+			$("#rnaSequences").hide();
+			$("#proteinSequences").hide();
+			$("#dotMatrix").hide();
+			$("#blaze").hide();
+			$("#distanceMatrix").hide();
+			$("#inverseSequences").hide();
+		});
+		$("#displayBlaze").click(function(){
+			$("#topTree").hide();
+			$("#rnaSequences").hide();
+			$("#proteinSequences").hide();
+			$("#dotMatrix").hide();
+			$("#blaze").show();
+			$("#distanceMatrix").hide();
+			$("#inverseSequences").hide();
+		});
+		$("#displayDistanceMatrix").click(function(){
+			$("#topTree").hide();
+			$("#rnaSequences").hide();
+			$("#proteinSequences").hide();
+			$("#dotMatrix").hide();
+			$("#blaze").hide();
+			$("#distanceMatrix").show();
+			$("#inverseSequences").hide();
+		});
+		$("#displayInverse").click(function(){
+			$("#topTree").hide();
+			$("#rnaSequences").hide();
+			$("#proteinSequences").hide();
+			$("#dotMatrix").hide();
+			$("#blaze").hide();
+			$("#distanceMatrix").hide();
+			$("#inverseSequences").show();
+		});
+		
+		$("#sendBlaze").click(function(){
+		
+			if(checkOneIsValid($("#blazeSelect").val())){
+				var seq = $("#speciesValue"+$("#blazeSelect").val()).val();
+				
+				getBlazeReport("{% url 'dnaedit:blaze' %}", seq);
+			}
+			else{
+				$("#blazeDisplay").html("<p>You chose an Invalid Sequence.</p>");
+			}
+			
+		});
+		
+		$("#dotMatrixGen").click(function(){
+		
+			if(checkAllValid()){
+				var seqName = $("#speciesName"+$("#dotSelect").val()).val().trim();
+				var dataInfo = generateSequenceDict();
+				var dataString = JSON.stringify(dataInfo);
+				getDotMatrix("{% url 'dnaedit:dotMatrix' %}", dataString, seqName);
+			}
+			else{
+				$("#blazeDisplay").html("<p>There is at least one invalid sequence.</p>");
+			}
+		});
+		
+		$("#rnaGen").click(function(){
+			if(checkAllValid()){
+				var dataInfo = generateSequenceDict();
+				var dataString = JSON.stringify(dataInfo);
+				getRNAFromDNA("{% url 'dnaedit:dnatorna' %}", dataString);
+			}
+			else{
+				$("#rnaDisplay").html("<p>There is at least one invalid sequence.</p>");
+			}
+		});
+		
+		$("#inverseGen").click(function(){
+			if(checkAllValid()){	
+				var dataInfo = generateSequenceDict();
+				var dataString = JSON.stringify(dataInfo);
+				getInverseDNA("{% url 'dnaedit:inverseDna' %}", dataString);
+			}
+			else{
+				$("#inverseDisplay").html("<p>There is at least one invalid sequence.</p>");
+			}
+		});
+		
+		$("#proteinGen").click(function(){
+			if(checkAllValid()){
+				var dataInfo = generateSequenceDict();
+				var dataString = JSON.stringify(dataInfo);
+				getProteinFromDNA("{% url 'dnaedit:dnatoprotein' %}", dataString);
+			}
+			else{
+				$("#proteinDisplay").html("<p>There is at least one invalid sequence.</p>");
+			}
+		});
+		
+		$("#distanceGen").click(function(){
+			if(checkAllValid()){
+				var dataInfo = generateSequenceDict();
+				var dataString = JSON.stringify(dataInfo);
+				getDistanceMatrixString("{% url 'dnaedit:distanceMatrixString' %}", dataString);
+			}
+			else{
+				$("#distanceDisplay").html("<p>There is at least one invalid sequence.</p>");
+			}
+		});
+		
+		$("#treeGen").click(function(){
+			if(checkAllValid()){
+				var dataInfo = generateSequenceDict();
+				var dataString = JSON.stringify(dataInfo);
+				getTopologyFilePath("{% url 'dnaedit:topologyFile' %}", dataString);
+			}
+			else{
+				$("#treeDisplay").html("<p>There is at least one invalid sequence.</p>");
+			}
+		});
+		
+		$("#treeStringGen").click(function(){
+			if(checkAllValid()){
+				var dataInfo = generateSequenceDict();
+				var dataString = JSON.stringify(dataInfo);
+				getTopologyTreeString("{% url 'dnaedit:topologyString' %}", dataString);
+			}
+			else{
+				$("#treeDisplay").html("<p>There is at least one invalid sequence.</p>");
+			}
+		});
+	
+	});
+	
+	$("#waveformDisplay").click(function(){
+		if(checkOneIsValid($("#waveformSelect").val())){	
+			$("#waveformError").html("");
+			var seqName = $("#speciesValue"+$("#waveformSelect").val()).val().trim(); 
+			drawGraphInPopup(seqName);
+		}
+		else{
+			$("#waveformError").html("<p>You chose an Invalid Sequence.</p>");
+		}
+	});
+	
+</script>
+
+{% endblock %}
+

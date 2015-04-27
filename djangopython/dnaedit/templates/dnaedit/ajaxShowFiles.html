@@ -1,0 +1,32 @@
+{% extends 'dnaedit/base.html' %}
+
+{% block pagetitle %}Select File for Lab{% endblock %}
+
+{% block content %}
+<p>Select a File for the Lab</p>
+
+
+<div id='labSelection'> </div>
+<br />
+<form action="{% url 'dnaedit:ajaxFiles' %}" method="POST" id="fileSend">
+</form>
+
+{% endblock %}
+
+{% block js %}
+<script>
+
+function sendLab(value){
+	getFiles("{% url 'dnaedit:getFiles' %}",value)
+	
+}
+$(document).ready(function(){
+			
+	getLabs("{% url 'dnaedit:getLabs' %}");
+			
+
+});
+	
+
+</script>
+{% endblock %}

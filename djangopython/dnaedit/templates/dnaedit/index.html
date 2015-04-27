@@ -1,0 +1,269 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>DNA Studio</title>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta name="description" content="" />
+		<meta name="keywords" content="" />
+		<!--[if lte IE 8]><script src="{{ STATIC_URL }}indexFiles/css/ie/html5shiv.js"></script><![endif]-->
+		<script src="{{ STATIC_URL }}indexFiles/js/jquery.min.js"></script>
+		<script src="{{ STATIC_URL }}indexFiles/js/jquery.scrolly.min.js"></script>
+		<script src="{{ STATIC_URL }}indexFiles/js/jquery.poptrox.min.js"></script>
+		<script src="{{ STATIC_URL }}indexFiles/js/skel.min.js"></script>
+		<script src="{{ STATIC_URL }}indexFiles/js/init.js"></script>
+		<noscript>
+			<link rel="stylesheet" href="{{ STATIC_URL }}indexFiles/css/skel.css" />
+			<link rel="stylesheet" href="{{ STATIC_URL }}indexFiles/css/style.css" />
+		</noscript>
+		<!--[if lte IE 8]><link rel="stylesheet" href="{{ STATIC_URL }}indexFiles/css/ie/v8.css" /><![endif]-->
+	</head>
+	<body>
+
+		<!-- Header -->
+			<section id="header">
+				<header>
+					<h1>DNA Studio</h1>
+					<p>Auburn University</p>
+				</header>
+				<footer>
+					<a href="#banner" class="button style2 scrolly-middle">Select Files</a>
+				</footer>
+			</section>
+
+		<!-- Banner -->
+			<section id="banner">
+				<header id = "bannerHeader">
+					<h2>Select Files</h2>
+				</header>
+				<!-- <button> Browse </button>
+				<input type="text" readonly>
+				<button> Upload </button> -->
+				
+				<footer>
+					<a href="#sequences" class="button style2 scrolly">Select Sequences</a>
+				</footer>
+			</section>
+
+		<!-- Feature 1 -->
+			<section id="sequences" >
+				<header>
+					<h2>Select Sequence and Align</h2>
+				</header>
+				
+				<div id = "speciesDiv">			
+					
+					<label id="positionLabel" style="position:relative; padding-left:1110px; color:red;">0/250</label>
+					
+					<div id = "species1" class = "speciesDiv" contenteditable="true" onClick="toggleSelect(this);"> Species 1 </div>
+					
+					<div id = "textbox1" contenteditable="true" class="textbox" type="text" > </div>
+					
+					<div id = "species2" class = "speciesDiv" contenteditable="true" onClick="toggleSelect(this);"> Species 2 </div>
+					
+					<div id = "textbox2" contenteditable="true" class="textbox"type="text" > </div>
+					
+					<div id = "species3" class = "speciesDiv" contenteditable="true" onClick="toggleSelect(this);"> Species 3 </div>
+					
+					<div id = "textbox3" contenteditable="true" class="textbox"type="text" > </div>		
+
+				</div>	
+				
+				<div id = "addRemoveDiv">
+					<button id ="addSequence" style=" border: none; background: none; float:left; position:relative; margin-left:1070px; padding-top: 15px; display:block; color: white; font-size: 15px;" onClick = "addSequence()"> Add New |</button>	
+					<button id ="removeSequence" style=" border: none; background: none; position:relative; margin-left:1071px; display:block; padding-top: 15px; display:block; color: white; font-size: 15px;" onClick = "removeSequence(this)">Remove </button>
+				</div>
+				
+				<footer>
+					<a href="#topology" class="button style2 scrolly" onclick = "align()">Select Sequences</a>
+				</footer>
+			</section>
+
+		<!-- Feature 2 -->
+			<section id="topology" >
+				<header>
+					<h2>Topology</h2>
+				</header>
+				
+				
+				
+				<footer>
+					<a href="#first" class="button style2 scrolly">Select Sequences</a>
+				</footer>
+			</section>
+
+		<!-- Portfolio -->
+			<article class="container box style2">
+				<header>
+					<h2>Magnis parturient</h2>
+					<p>Justo phasellus et aenean dignissim<br />
+					placerat cubilia purus lectus.</p>
+				</header>
+				<div class="inner gallery">
+					<div class="row 0%">
+						<div class="3u"><a href="{{ STATIC_URL }}indexFiles/images/fulls/01.jpg" class="image fit"><img src="{{ STATIC_URL }}indexFiles/images/thumbs/01.jpg" alt="" title="Ad infinitum" /></a></div>
+						<div class="3u"><a href="{{ STATIC_URL }}indexFiles/images/fulls/02.jpg" class="image fit"><img src="{{ STATIC_URL }}indexFiles/images/thumbs/02.jpg" alt="" title="Dressed in Clarity" /></a></div>
+						<div class="3u"><a href="{{ STATIC_URL }}indexFiles/images/fulls/03.jpg" class="image fit"><img src="{{ STATIC_URL }}indexFiles/images/thumbs/03.jpg" alt="" title="Raven" /></a></div>
+						<div class="3u"><a href="{{ STATIC_URL }}indexFiles/images/fulls/04.jpg" class="image fit"><img src="{{ STATIC_URL }}indexFiles/images/thumbs/04.jpg" alt="" title="I'll have a cup of Disneyland, please" /></a></div>
+					</div>
+					<div class="row 0%">
+						<div class="3u"><a href="{{ STATIC_URL }}indexFiles/images/fulls/05.jpg" class="image fit"><img src="{{ STATIC_URL }}indexFiles/images/thumbs/05.jpg" alt="" title="Cherish" /></a></div>
+						<div class="3u"><a href="{{ STATIC_URL }}indexFiles/images/fulls/06.jpg" class="image fit"><img src="{{ STATIC_URL }}indexFiles/images/thumbs/06.jpg" alt="" title="Different." /></a></div>
+						<div class="3u"><a href="{{ STATIC_URL }}indexFiles/images/fulls/07.jpg" class="image fit"><img src="{{ STATIC_URL }}indexFiles/images/thumbs/07.jpg" alt="" title="History was made here" /></a></div>
+						<div class="3u"><a href="{{ STATIC_URL }}indexFiles/images/fulls/08.jpg" class="image fit"><img src="{{ STATIC_URL }}indexFiles/images/thumbs/08.jpg" alt="" title="People come and go and walk away" /></a></div>
+					</div>
+				</div>
+			</article>
+
+		<section id="footer">
+			<ul class="icons">
+				<li><a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
+				<li><a href="#" class="icon fa-facebook"><span class="label">Facebook</span></a></li>
+				<li><a href="#" class="icon fa-google-plus"><span class="label">Google+</span></a></li>
+				<li><a href="#" class="icon fa-pinterest"><span class="label">Pinterest</span></a></li>
+				<li><a href="#" class="icon fa-dribbble"><span class="label">Dribbble</span></a></li>
+				<li><a href="#" class="icon fa-linkedin"><span class="label">LinkedIn</span></a></li>
+			</ul>
+			<div class="copyright">
+				<ul class="menu">
+					<li>&copy; DNA Studio. All rights reserved.</li><li>For more information visit: <a href="http://www.auburn.edu/cosam/departments/biology/">AU Biology</a></li>
+				</ul>
+			</div>
+		</section>
+		
+	
+		<script>
+			var sequenceCount = 3;
+			
+			$(document).ready(function(){
+			
+				$.ajax({	
+					url:"{% url 'dnaedit:getLabs' %}",
+					type: "GET",
+					data: {},
+					success: function(data){
+					
+							//var jsonParse = JSON.parse(data);
+							console.log(data);
+							labNameSetup(data.labs);
+							
+						},		
+				});	
+			});
+
+			function labNameSetup(labs){
+				var labSelect;
+				var labId;
+				labSelect = "<select id='lab' name='lab_id' onchange='sendLab(this.value)'>";
+				labSelect += "<option selected='selected'>Please Select a lab</option>";
+				for(labId in labs){
+					labSelect += "<option value='"+labId+"'>"+ labs[labId] +"</option>";
+				}
+				
+				labSelect += "</select>";
+				var banner = document.getElementById('bannerHeader');
+				banner.appendChild(labSelect);
+				//$('#labSelection').html(labSelect);
+			}
+			
+			function getLabs(url){
+				$.ajax({
+					url: url,
+					type: "GET",
+					data: {},
+					success: function(data){
+					
+							console.log(data);
+							labNameSetup(data.labs);
+							
+						},
+					
+				});
+			}
+			
+			function getTopologyPath(){
+			
+			}
+			
+			function align(){
+				var sequences = [];
+				var arrayIndex = 0;
+				for(i = sequenceCount*2; i > 0; i= i-2){
+					var div = document.getElementById('speciesDiv');
+					var childLength = document.getElementById('speciesDiv').children.length - 1;
+					var tempSequence = div.children[i].innerHTML;
+					sequences[arrayIndex] = tempSequence;
+					arrayIndex++;
+				}
+				
+				var alignedSequences = JSON.stringify(sequences);
+				AlignedSequences('name', alignedSequences);
+			}
+			
+			function toggleSelect(currentSequence){
+				var selectedSequence = currentSequence;
+				if(selectedSequence.style.backgroundColor == ""){
+					selectedSequence.style.backgroundColor='#84DFC1';
+				}
+				else{
+					selectedSequence.style.backgroundColor = "";
+				}
+			}
+			
+			function addSequence(){
+				sequenceCount ++;
+				var newSequence = document.createElement('div');
+				newSequence.id = 'sequence'+sequenceCount;
+				newSequence.setAttribute("class", "speciesDiv");
+				newSequence.setAttribute("contenteditable", "true");
+				newSequence.setAttribute("onClick", "toggleSelect(this);")
+				newSequence.innerHTML = 'Species '+ sequenceCount;
+				
+				var newSequenceTextbox = document.createElement('div');
+				newSequenceTextbox.id = 'textBox' + sequenceCount;
+				newSequenceTextbox.setAttribute("class", "textbox");
+				newSequenceTextbox.setAttribute("contenteditable", "true");
+				newSequenceTextbox.setAttribute("type", "text");
+				
+				var sequenceDiv = document.getElementById('speciesDiv');
+				sequenceDiv.appendChild(newSequence);
+				sequenceDiv.appendChild(newSequenceTextbox);
+			}
+			
+			function removeSequence(){
+				if(sequenceCount >= 1){
+					var div = document.getElementById('speciesDiv');
+					var childLength = document.getElementById('speciesDiv').children.length - 1;
+					div.removeChild(div.children[childLength]);
+					div.removeChild(div.children[childLength - 1]);
+					sequenceCount --;
+				}
+			}
+			
+			document.body.addEventListener("mouseup", function() {
+				if (document.getSelection().anchorNode.parentNode.className == "textbox"){
+					var el = document.getElementsByClassName("textbox");
+					var range = document.getSelection().getRangeAt(0);
+					var label = document.getElementById("positionLabel");
+					label.innerHTML = range.endOffset + '/250';
+				}
+				else{
+					var range = 0;
+					var label = document.getElementById("positionLabel");
+					label.innerHTML = range + '/250';
+				}
+			}, false);
+			
+			$('#test').keypress(function(event) {
+				if (event.keyCode == 13) {
+					event.preventDefault();
+				}
+			});
+		
+			
+		</script> 
+
+	</body>
+	
+	
+	
+</html>

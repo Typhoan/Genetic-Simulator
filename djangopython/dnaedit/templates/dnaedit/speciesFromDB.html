@@ -1,0 +1,28 @@
+{% extends 'dnaedit/base.html' %}
+
+{% block pagetitle %}Species{% endblock %}
+
+{% block content %}
+
+<p>The species from the file.</p>
+
+{% if dna_sequences %}
+<form method='post' action='{% url 'dnaedit:aligned' %}'> {% csrf_token %} 
+
+	{% for strand in dna_sequences %}
+		<input type='text' size='15' name='speciesName{{ forloop.counter }}' value='Species {{ forloop.counter }}'/> <input type='text' size='200'  name='species{{ forloop.counter }}' value='{{ strand.dna_string }}'/><br />
+		
+		{% if forloop.last %}
+			<input type="hidden" name="count" value="{{ forloop.counter }}" />
+		{% endif %}
+	
+	{% endfor %}
+	
+	<button type="submit">Submit</button>
+</form>
+
+{% else %}
+not working
+{% endif %}
+
+{% endblock %}

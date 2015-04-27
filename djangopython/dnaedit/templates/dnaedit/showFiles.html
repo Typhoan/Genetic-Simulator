@@ -1,0 +1,23 @@
+{% extends 'dnaedit/base.html' %}
+
+{% block pagetitle %}Select File for Lab{% endblock %}
+
+{% block content %}
+<p>Select a File for the Lab</p>
+
+<form action='{% url 'dnaedit:fileSelect' %}' method="POST" enctype='multipart/form-data'> {% csrf_token %}
+<select name = 'file_id'>
+{% if files %}
+	{% for file in files %}
+		<option value="{{file.id}}">{{ file.file_name }}</option>
+	{% endfor %}
+	
+	</ul>
+	
+{% else %}
+	<option selected="selected">Nothing to select</option>
+{% endif %}
+</select>
+<button type="submit">Submit</button>
+</form>
+{% endblock %}

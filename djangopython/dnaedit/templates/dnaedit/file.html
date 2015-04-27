@@ -1,0 +1,68 @@
+{% extends 'dnaedit/base.html' %}
+
+{% block pagetitle %}Upload File{% endblock %}
+
+{% block content %}
+<p>Select an already existing Lab or input a new lab below.</p>
+<div id='labSelection'> </div>
+<form id="uploadImage" enctype="multipart/form-data">
+    <input name="lab_name" id="lab_name" type="text" placeholder="Type lab name here."/> <input name="lab_file" type="file" />
+    <input type="button" value="Upload"/>
+</form>
+
+<div id="message"></div>
+
+{% endblock %}
+
+
+{% block js %}
+
+<script>
+
+
+$(':button').click(function(){
+    var formData;
+    formData = new FormData($('form')[0]);
+    $.ajax({
+    	url: "{% url 'dnaedit:uploadLabFile' %}",
+    	type: "POST",
+    	data: formData,
+    	processData: false,  // tell jQuery not to process the data
+  		contentType: false,   // tell jQuery not to set contentType
+    	success: function(data){
+    		$("#message").html("<p>"+data.message+"</p>");
+    	},
+    
+    });
+});
+$(document).ready(function(){
+			
+	$.ajax({
+		
+		url: "{% url 'dnaedit:getLabs' %}",
+		type: "GET",
+		data: {},
+		success: function(data){
+			var labSelect;
+			var labId;
+			labSelect = "<select id='lab' name='lab_id' onchange='showLab(this.value)'>";
+			labSelect += "<option selected='selected'>Please Select a lab</option>";
+			for(labId in data.labs){
+				labSelect += "<option value='"+data.labs[labId]+"'>"+ data.labs[labId] +"</option>";
+			}
+			
+			labSelect += "</select>";
+			
+			$('#labSelection').html(labSelect);
+		},
+		
+	});
+			
+});
+function showLab(value){
+	$("#lab_name").val(value);
+}
+
+</script>
+
+{% endblock %}
