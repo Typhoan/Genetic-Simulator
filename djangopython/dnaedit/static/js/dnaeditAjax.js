@@ -160,7 +160,6 @@ function setRNA(rnaStuff){
 	var replacement="";
 	var i;
 	for(i=0; i<keys.length; i++){
-	console.log(keys[i]);
 		replacement += "<p>"+keys[i]+": "+rnaStuff[keys[i]]+"</p>";
 	}
 	
@@ -173,7 +172,6 @@ function setInverse(inverseStuff){
 	var replacement="";
 	var i;
 	for(i=0; i<keys.length; i++){
-	console.log(keys[i]);
 		replacement += "<p>"+keys[i]+": "+inverseStuff[keys[i]]+"</p>";
 	}
 	

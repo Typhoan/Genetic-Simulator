@@ -55,10 +55,7 @@ class BlastHandler(object):
         #Here we try to get results back from blast. If it doesn't come in 5 minutes
         #we raise an exception.
         try:
-            #signal.signal(signal.SIGALRM, blastTimeoutHandler)
-            #signal.alarm(300)
             resultHandler = NCBIWWW.qblast("blastn", "nt", self.seq)#problem child
-            #signal.alarm(0)
         except URLError:
             raise URLError("No connection to blast made")
         
